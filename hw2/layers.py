@@ -498,7 +498,7 @@ class MLP(Layer):
         self.sequence = Sequential(*layers)
 
     def forward(self, x, **kw):
-        return self.sequence(x, **kw)
+        return self.sequence.forward(x, **kw)
 
     def backward(self, dout):
         return self.sequence.backward(dout)
