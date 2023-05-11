@@ -12,12 +12,24 @@ part1_q1 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1.a. The shape of the jacobian is '(N = 64, if_features = 1024, N = 64, out_features = 512)' 
+
+1.b. yes, this matrix is sparse. because $\forall j\neq i:\frac{\partial y_i}{\partial x_j} = 0$, 
+     and this is because we treat each sample independently from the rest of the batch.
+     
+1.c. There is no need to materialize the jacobian,  we can calculate $\frac{\partial L}{\partial X}$
+     by performing matrix multiplication: $\frac{\partial L}{\partial Y} \times W$ 
+     
+2.a. The shape of the jacobian is '(N = 64, out_features = 512, out_features = 512, in_features = 1024)'
+
+2.b. yes, this matrix is sparse. because $\forall k\neq j:\frac{\partial Y_{(i, j)}}{\partial W_{(k, y)}} = 0$, 
+     and this is because each neuron is only effected by hhis owm weights.
+     
+2.c. There is no need to materialize the jacobian,  we can calculate $\frac{\partial L}{\partial Y}$
+     by performing matrix multiplication: $\frac{\partial L}{\partial Y}^T \times X$ 
+
+
+
 
 """
 
@@ -25,12 +37,12 @@ part1_q2 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Yes we can! we can train a neural network without back propagation. we can expand the expression of the loss as a function of each o our
+parameters, deriviate it analiticly by hand and so find the gradient with respept to each parameter. 
+
+However, this approach is very hard to implement. And would require redoing the calculations every time we change the networking.
+Making nerual networks withour backprop not very feasible.
+ 
 
 """
 
@@ -63,8 +75,8 @@ def part2_optim_hp():
     # You may want to use different learning rates for each optimizer.
     # ====== YOUR CODE: ======
     wstd = 1
-    lr_vanilla = 0.002
-    lr_momentum = 0.001
+    lr_vanilla = 0.0000002
+    lr_momentum = 0.0001
     lr_rmsprop = 0.00001
     reg = 0.000002
     # ========================
@@ -85,7 +97,8 @@ def part2_dropout_hp():
     # TODO: Tweak the hyperparameters to get the model to overfit without
     # dropout.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    wstd = 0.1
+    lt = 0.001
     # ========================
     return dict(wstd=wstd, lr=lr)
 
