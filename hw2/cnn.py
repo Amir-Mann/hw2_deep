@@ -80,8 +80,14 @@ class CNN(nn.Module):
         #  Note: If N is not divisible by P, then N mod P additional
         #  CONV->ACTs should exist at the end, without a POOL after them.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
-
+        all_channels = [in_channels] + self.channels
+        ActivationClass = nn.ReLU if self.activation_type == 'relu' else nn.LeakyReLU
+        PoolingClass = nn.MaxPool2d if self.activation_type == 'max' else nn.AvgPool2d
+        for i, (in_chans, out_chans) in enumerate(zip(all_channels, all_channels[1:])):
+            layers.append(nn.Conv2d(in_chans, out_chans, **self.conv_params))
+            layers.append(ActivationClass(**self.activation_params))
+            if (i + 1) % self.pool_every == 0:
+                layers.append(PoolingClass(**self.pooling_params))
         # ========================
         seq = nn.Sequential(*layers)
         return seq
@@ -109,7 +115,7 @@ class CNN(nn.Module):
         #  - The last Linear layer should have an output dim of out_classes.
         mlp: MLP = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        mlp = MLP()
         # ========================
         return mlp
 
