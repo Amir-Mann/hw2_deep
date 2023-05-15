@@ -12,6 +12,7 @@ import torch
 from sklearn.datasets import make_moons
 from sklearn.model_selection import train_test_split
 import copy
+from cs236781.train_results import FitResult
 
 def rotate_2d(X, deg=0):
     """
@@ -108,10 +109,10 @@ def activation(act, dv):
 
 ALTERATION_HP = {
     "loss_fn": (lambda x, _:x, 1),
-    "n_layers": (addint, 0.25),
-    "hidden_dims": (addint, 10),
-    "activation": (activation, 1),
-    "out_activation": (activation, 1),
+    "n_layers": (addint, 0.4),
+    "hidden_dims": (addint, 30),
+    "activation": (activation, 1.3),
+    "out_activation": (activation, 1.3),
     "lr": (mult, 1),
     "weight_decay": (mult, 1),
     "momentum": (mult, 0.01)
@@ -147,14 +148,13 @@ def main():
         i_frac = 2.0001 - 2 ** ((i / iters) ** 2)
         hp_arch, hp_optim = alter_params(best_hp_arch, best_hp_optim, i_frac)
         with mute():
-            fit_result = test(hp_arch, hp_optim, dl_train, dl_valid)
-        result = fit_result.train_acc[-1]
+            result = test(hp_arch, hp_optim, dl_train, dl_valid).train_acc[-1]
         if result > best_result:
             best_result = result
             best_hp_arch = copy.copy(hp_arch)
             best_hp_optim = copy.copy(hp_optim)
-            print("found better results")
-            print(f"Accuracy of train at last epoch: {best_result}")
+            print()
+            print(f"Found better results, accuracy of train at last epoch: {best_result}")
             print(f"hp_arch:  {hp_arch}")
             print(f"hp_optim: {hp_optim}")
     print(f"finished at {datetime.now()}")
