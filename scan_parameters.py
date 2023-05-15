@@ -3,6 +3,7 @@ import sys
 import unittest
 import random
 from contextlib import contextmanager
+from datetime import datetime
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -134,6 +135,8 @@ def mute():
 
 
 def main():
+    print(f"started at {datetime.now()}")
+    start = datetime.now()
     best_hp_arch = part3_arch_hp()
     best_hp_optim = part3_optim_hp()
     best_result = 0
@@ -154,6 +157,9 @@ def main():
             print(f"Accuracy of train at last epoch: {best_result}")
             print(f"hp_arch:  {hp_arch}")
             print(f"hp_optim: {hp_optim}")
+    print(f"finished at {datetime.now()}")
+    delta = datetime.now() - start
+    print(f"time took is {delta} for {int(sys.argv[1]) * int(sys.argv[2])} epochs")
 
 if __name__ == '__main__':
     main()
