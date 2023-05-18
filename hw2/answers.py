@@ -12,12 +12,24 @@ part1_q1 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1.a. The shape of the jacobian is '(N = 64, if_features = 1024, N = 64, out_features = 512)' 
+
+1.b. yes, this matrix is sparse. because $\forall j\neq i:\frac{\partial y_i}{\partial x_j} = 0$, 
+     and this is because we treat each sample independently from the rest of the batch.
+     
+1.c. There is no need to materialize the jacobian,  we can calculate $\frac{\partial L}{\partial X}$
+     by performing matrix multiplication: $\frac{\partial L}{\partial Y} \times W$ 
+     
+2.a. The shape of the jacobian is '(N = 64, out_features = 512, out_features = 512, in_features = 1024)'
+
+2.b. yes, this matrix is sparse. because $\forall k\neq j:\frac{\partial Y_{(i, j)}}{\partial W_{(k, y)}} = 0$, 
+     and this is because each neuron is only effected by hhis owm weights.
+     
+2.c. There is no need to materialize the jacobian,  we can calculate $\frac{\partial L}{\partial Y}$
+     by performing matrix multiplication: $\frac{\partial L}{\partial Y}^T \times X$ 
+
+
+
 
 """
 
@@ -25,12 +37,12 @@ part1_q2 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Yes we can! we can train a neural network without back propagation. we can expand the expression of the loss as a function of each o our
+parameters, deriviate it analiticly by hand and so find the gradient with respept to each parameter. 
+
+However, this approach is very hard to implement. And would require redoing the calculations every time we change the networking.
+Making nerual networks withour backprop not very feasible.
+ 
 
 """
 
@@ -62,11 +74,11 @@ def part2_optim_hp():
     # TODO: Tweak the hyperparameters to get the best results you can.
     # You may want to use different learning rates for each optimizer.
     # ====== YOUR CODE: ======
-    wstd =        0.1
-    lr_vanilla =  0.00002
-    lr_momentum = 0.00001
-    lr_rmsprop =  0.00001
-    reg =         0.00002
+    wstd = 1
+    lr_vanilla = 0.0000002
+    lr_momentum = 0.0001
+    lr_rmsprop = 0.00001
+    reg = 0.000002
     # ========================
     return dict(
         wstd=wstd,
@@ -85,7 +97,8 @@ def part2_dropout_hp():
     # TODO: Tweak the hyperparameters to get the model to overfit without
     # dropout.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    wstd = 0.1
+    lt = 0.001
     # ========================
     return dict(wstd=wstd, lr=lr)
 
@@ -165,7 +178,10 @@ def part3_arch_hp():
     out_activation = "none"  # activation function to apply at the output layer
     # TODO: Tweak the MLP architecture hyperparameters.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    n_layers = 3
+    hidden_dims = 200
+    activation = 'relu'
+    out_activation = 'sigmoid'
     # ========================
     return dict(
         n_layers=n_layers,
@@ -187,7 +203,10 @@ def part3_optim_hp():
     #    What you returns needs to be a callable, so either an instance of one of the
     #    Loss classes in torch.nn or one of the loss functions from torch.nn.functional.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    loss_fn = torch.nn.CrossEntropyLoss()
+    lr = 0.00005
+    weight_decay = 0.00002
+    momentum = 0.9
     # ========================
     return dict(lr=lr, weight_decay=weight_decay, momentum=momentum, loss_fn=loss_fn)
 
