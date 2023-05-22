@@ -227,6 +227,8 @@ class Trainer(abc.ABC):
 
         return EpochResult(losses=losses, accuracy=accuracy)
 
+r = set()
+r_pred = set()
 class ClassifierTrainer(Trainer):
     """
     Trainer for our Classifier-based models.
@@ -266,13 +268,21 @@ class ClassifierTrainer(Trainer):
         #  - Update parameters
         #  - Classify and calculate number of correct predictions
         # ====== YOUR CODE: ======
-        forward_scores = self.model.forward(X.view(X.size(0), -1))
+        self.optimizer.zero_grad()
+        forward_scores = self.model.forward(X)
         probas = self.model.predict_proba_scores(forward_scores)
         batch_loss = self.loss_fn.forward(probas, y)
-        self.optimizer.zero_grad()
         batch_loss.backward()
-        self.optimizer.step()
+        #grads = [p.grad.norm() for p in self.model.parameters()]
+        #print(str(float(sum(grads)))[:5], end=",")
+        self.optimizer.step() 
         y_pred = self.model.classify_scores(forward_scores)
+        for v in y:
+            r.add(int(v))
+        for v in y_pred:
+            r_pred.add(int(v))
+        if float(torch.randn(1)) > 1.8:
+            print(r, r_pred)
         num_correct = (y_pred == y).sum().item()
         # ========================
 
@@ -293,7 +303,7 @@ class ClassifierTrainer(Trainer):
             #  - Forward pass
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
-            forward_scores = self.model.forward(X.view(X.size(0), -1))
+            forward_scores = self.model.forward(X)
             probas = self.model.predict_proba_scores(forward_scores)
             batch_loss = self.loss_fn.forward(probas, y)
             

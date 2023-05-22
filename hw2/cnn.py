@@ -81,8 +81,8 @@ class CNN(nn.Module):
         #  CONV->ACTs should exist at the end, without a POOL after them.
         # ====== YOUR CODE: ======
         all_channels = [in_channels] + self.channels
-        ActivationClass = nn.ReLU if self.activation_type == 'relu' else nn.LeakyReLU
-        PoolingClass = nn.MaxPool2d if self.activation_type == 'max' else nn.AvgPool2d
+        ActivationClass = ACTIVATIONS[self.activation_type]
+        PoolingClass = POOLINGS[self.pooling_type]
         for i, (in_chans, out_chans) in enumerate(zip(all_channels, all_channels[1:])):
             layers.append(nn.Conv2d(in_chans, out_chans, **self.conv_params))
             layers.append(ActivationClass(**self.activation_params))
@@ -101,10 +101,17 @@ class CNN(nn.Module):
         rng_state = torch.get_rng_state()
         try:
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            with torch.no_grad():
+                in_channels, in_h, in_w, = tuple(self.in_size)
+                null_data = torch.randn((1, in_channels, in_h, in_w))
+                for_classifier_size = self.feature_extractor.forward(null_data).size()
+                n_features = 1
+                for dim in for_classifier_size:
+                    n_features *= dim
             # ========================
         finally:
             torch.set_rng_state(rng_state)
+        return n_features  # added code
 
     def _make_mlp(self):
         # TODO:
@@ -115,7 +122,10 @@ class CNN(nn.Module):
         #  - The last Linear layer should have an output dim of out_classes.
         mlp: MLP = None
         # ====== YOUR CODE: ======
-        mlp = MLP()
+        n_features = self._n_features()
+        act_class = ACTIVATIONS[self.activation_type]
+        mlp_activations = [act_class(**self.activation_params) for hidden in self.hidden_dims] + [None]
+        mlp = MLP(n_features, self.hidden_dims + [self.out_classes], mlp_activations)
         # ========================
         return mlp
 
@@ -125,7 +135,9 @@ class CNN(nn.Module):
         #  return class scores.
         out: Tensor = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        features = self.feature_extractor.forward(x)
+        N = features.shape[0]
+        out = self.mlp.forward(features.view(N, -1))
         # ========================
         return out
 
