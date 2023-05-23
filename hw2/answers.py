@@ -217,41 +217,26 @@ An equation: $e^{i\pi} -1 = 0$
 
 part3_q2 = r"""
 **Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+We would have expected the confusion matrix to be well balanced (FPR close to FNR) because
+the shift from the train ds to the validation ds is symetrical around the origin and the same
+amount of False Positives would be added as of False Negatives.
 """
 
 part3_q3 = r"""
 **Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+In both cases knowledge of the problem and "cost" of mistakes changes the threshold we choose.
+1. In the first scenario, FP are expansive to send into farther examinations, while FN are quit
+    allright because the person isn't in serious danger. For this case we would choose higher 
+    threshold to classify more FN and less FP.
+2. In the second scenario, FN are really costly as they would cost someones life. So for this case
+    we would rather get more FP over FN. So we would set a lower threshold to classfy more FP then FN.
+In both cases, setting a reasonable threshold (not 0 or 1) is still important, otherwise the model 
+is usless, and there is a need to find a good compromise taking into acount the adjusted "costs".
 """
 
 
 part3_q4 = r"""
 **Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
 
 """
 # ==============
