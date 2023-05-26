@@ -83,12 +83,12 @@ class Trainer(abc.ABC):
             #  - Use the train/test_epoch methods.
             #  - Save losses and accuracies in the lists above.
             # ====== YOUR CODE: ======
-            train_result = self.train_epoch(dl_train, verbose=verbose)
-            train_acc.append(train_result.accuracy)
-            train_loss += train_result.losses
-            test_result = self.test_epoch(dl_test, verbose=verbose)
-            test_acc.append(test_result.accuracy)
-            test_loss += test_result.losses
+            train_results = self.train_epoch(dl_train, verbose=verbose)
+            train_acc.append(train_results.accuracy)
+            train_loss.extend([loss.detach() for loss in train_results.losses])
+            test_results = self.test_epoch(dl_test, verbose=verbose)
+            test_acc.append(test_results.accuracy)
+            test_loss.extend([loss.detach() for loss in test_results.losses])
             # ========================
 
             # TODO:
@@ -97,18 +97,14 @@ class Trainer(abc.ABC):
             #  - Optional: Implement checkpoints. You can use the save_checkpoint
             #    method on this class to save the model to the file specified by
             #    the checkpoints argument.
+            continue
             if best_acc is None or test_result.accuracy > best_acc:
                 # ====== YOUR CODE: ======
-                best_acc = test_result.accuracy
-                epochs_without_improvement = 0
-                if checkpoints:
-                    self.save_checkpoint(checkpoints)
+                raise NotImplementedError()
                 # ========================
             else:
                 # ====== YOUR CODE: ======
-                epochs_without_improvement += 1
-                if early_stopping and epochs_without_improvement >= early_stopping:
-                    break     
+                raise NotImplementedError()
                 # ========================
 
         return FitResult(actual_num_epochs, train_loss, train_acc, test_loss, test_acc)
@@ -226,9 +222,7 @@ class Trainer(abc.ABC):
             pbar_file.close()
 
         return EpochResult(losses=losses, accuracy=accuracy)
-
-r = set()
-r_pred = set()
+print_once = []
 class ClassifierTrainer(Trainer):
     """
     Trainer for our Classifier-based models.
@@ -268,22 +262,25 @@ class ClassifierTrainer(Trainer):
         #  - Update parameters
         #  - Classify and calculate number of correct predictions
         # ====== YOUR CODE: ======
+        
+        if not print_once:
+            print(y)
+        print_once.append(1)
+        scores = self.model(X)
+        probas = self.model.predict_proba_scores(scores)
+        if len(print_once) > 6:
+            pass#y[1] = 6
+        batch_loss = self.loss_fn(probas, y)
+        
         self.optimizer.zero_grad()
-        forward_scores = self.model.forward(X)
-        probas = self.model.predict_proba_scores(forward_scores)
-        batch_loss = self.loss_fn.forward(probas, y)
         batch_loss.backward()
-        #grads = [p.grad.norm() for p in self.model.parameters()]
-        #print(str(float(sum(grads)))[:5], end=",")
-        self.optimizer.step() 
-        y_pred = self.model.classify_scores(forward_scores)
-        for v in y:
-            r.add(int(v))
-        for v in y_pred:
-            r_pred.add(int(v))
-        if float(torch.randn(1)) > 1.8:
-            print(r, r_pred)
-        num_correct = (y_pred == y).sum().item()
+        for p in self.model.parameters():
+            print(p.grad.norm().item(), end=",")
+        print("batch fin:")
+        self.optimizer.step()
+        
+        y_prad = self.model.classify_scores(scores)
+        num_correct = (y_prad == y).sum().item()
         # ========================
 
         return BatchResult(batch_loss, num_correct)
@@ -303,12 +300,11 @@ class ClassifierTrainer(Trainer):
             #  - Forward pass
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
-            forward_scores = self.model.forward(X)
-            probas = self.model.predict_proba_scores(forward_scores)
-            batch_loss = self.loss_fn.forward(probas, y)
-            
-            y_pred = self.model.classify_scores(forward_scores)
-            num_correct = (y_pred == y).sum().item()   
+            scores = self.model(X)
+            probas = self.model.predict_proba_scores(scores)
+            batch_loss = self.loss_fn(probas, y)
+            y_prad = self.model.classify_scores(scores)
+            num_correct = (y_prad == y).sum().item()
             # ========================
 
         return BatchResult(batch_loss, num_correct)
@@ -317,9 +313,7 @@ class ClassifierTrainer(Trainer):
 class LayerTrainer(Trainer):
     def __init__(self, model, loss_fn, optimizer):
         # ====== YOUR CODE: ======
-        self.model = model
-        self.loss_fn = loss_fn
-        self.optimizer = optimizer
+        raise NotImplementedError()
         # ========================
 
     def train_batch(self, batch) -> BatchResult:
@@ -332,13 +326,7 @@ class LayerTrainer(Trainer):
         #  - Calculate number of correct predictions (make sure it's an int,
         #    not a tensor) as num_correct.
         # ====== YOUR CODE: ======
-        forward_output = self.model.forward(X.view(X.size(0), -1))
-        loss = self.loss_fn.forward(forward_output, y)
-        dl_doutput = self.loss_fn.backward(loss)
-        self.model.backward(dl_doutput)
-        self.optimizer.step()
-        y_pred = torch.argmax(forward_output, dim = 1)
-        num_correct = (y_pred == y).sum().item()
+        raise NotImplementedError()
         # ========================
 
         return BatchResult(loss, num_correct)
@@ -348,10 +336,7 @@ class LayerTrainer(Trainer):
 
         # TODO: Evaluate the Layer model on one batch of data.
         # ====== YOUR CODE: ======
-        forward_output = self.model.forward(X.view(X.size(0), -1))
-        loss = self.loss_fn.forward(forward_output, y)
-        y_pred = torch.argmax(forward_output, dim = 1)
-        num_correct = (y_pred == y).sum().item()
+        raise NotImplementedError()
         # ========================
 
         return BatchResult(loss, num_correct)

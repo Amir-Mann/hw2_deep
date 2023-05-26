@@ -197,14 +197,28 @@ class ResidualBlock(nn.Module):
         #  - Don't create layers which you don't use! This will prevent
         #    correct comparison in the test.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        main_path = []
+        for in_c, out_c, ksize in zip([in_channels] + channels[:-1], channels, kernel_sizes):
+            main_path.append(nn.Conv2d(in_c, out_c, ksize, padding=int(ksize // 2)))
+            if dropout:
+                main_path.append(nn.Dropout(dropout))
+            if batchnorm:
+                main_path.append(nn.BatchNorm2d(out_c))
+            main_path.append(ACTIVATIONS[activation_type](**activation_params))
+        self.main_path = nn.Sequential(*main_path)
+        self.shortcut_path = nn.Sequential(nn.Conv2d(in_channels,in_channels, 1, bias=False))
         # ========================
 
     def forward(self, x: Tensor):
         # TODO: Implement the forward pass. Save the main and residual path to `out`.
         out: Tensor = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        print("x", x.shape)
+        main_path_out = self.main_path.forward(x)
+        print("main", main_path_out.shape)
+        short_cut_out = self.shortcut_path.forward(x)
+        print("main", short_cut_out.shape)
+        out = main_path_out + short_cut_out
         # ========================
         out = torch.relu(out)
         return out

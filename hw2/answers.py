@@ -204,9 +204,9 @@ def part3_optim_hp():
     #    Loss classes in torch.nn or one of the loss functions from torch.nn.functional.
     # ====== YOUR CODE: ======
     loss_fn = torch.nn.CrossEntropyLoss()
-    lr = 0.00005
-    weight_decay = 0.00002
-    momentum = 0.9
+    lr = 0.1
+    weight_decay = 0.002
+    momentum = 0.93
     # ========================
     return dict(lr=lr, weight_decay=weight_decay, momentum=momentum, loss_fn=loss_fn)
 
@@ -279,9 +279,9 @@ def part4_optim_hp():
     #    What you returns needs to be a callable, so either an instance of one of the
     #    Loss classes in torch.nn or one of the loss functions from torch.nn.functional.
     # ====== YOUR CODE: ======
-    lr = 0.003
-    weight_decay = 0.00001
-    momentum = 0.98
+    lr = 1
+    weight_decay = 0.002
+    momentum = 0.9
     loss_fn = torch.nn.CrossEntropyLoss()
     # ========================
     return dict(lr=lr, weight_decay=weight_decay, momentum=momentum, loss_fn=loss_fn)
