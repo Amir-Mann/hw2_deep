@@ -65,6 +65,8 @@ class CNN(nn.Module):
             raise ValueError("Unsupported activation or pooling type")
 
         self.feature_extractor = self._make_feature_extractor()
+        self.n_features = None # Added code
+        self._n_features() # Added code
         self.mlp = self._make_mlp()
 
     def _make_feature_extractor(self):
@@ -108,10 +110,10 @@ class CNN(nn.Module):
                 n_features = 1
                 for dim in for_classifier_size:
                     n_features *= dim
+                self.n_features = n_features
             # ========================
         finally:
             torch.set_rng_state(rng_state)
-        return n_features  # added code
 
     def _make_mlp(self):
         # TODO:
@@ -122,10 +124,9 @@ class CNN(nn.Module):
         #  - The last Linear layer should have an output dim of out_classes.
         mlp: MLP = None
         # ====== YOUR CODE: ======
-        n_features = self._n_features()
         act_class = ACTIVATIONS[self.activation_type]
         mlp_activations = [act_class(**self.activation_params) for hidden in self.hidden_dims] + [None]
-        mlp = MLP(n_features, self.hidden_dims + [self.out_classes], mlp_activations)
+        mlp = MLP(self.n_features, self.hidden_dims + [self.out_classes], mlp_activations)
         # ========================
         return mlp
 
@@ -136,8 +137,7 @@ class CNN(nn.Module):
         out: Tensor = None
         # ====== YOUR CODE: ======
         features = self.feature_extractor.forward(x)
-        N = features.shape[0]
-        out = self.mlp.forward(features.view(N, -1))
+        out = self.mlp.forward(features.view(-1, self.n_features))
         # ========================
         return out
 
@@ -198,27 +198,28 @@ class ResidualBlock(nn.Module):
         #    correct comparison in the test.
         # ====== YOUR CODE: ======
         main_path = []
-        for in_c, out_c, ksize in zip([in_channels] + channels[:-1], channels, kernel_sizes):
-            main_path.append(nn.Conv2d(in_c, out_c, ksize, padding=int(ksize // 2)))
-            if dropout:
-                main_path.append(nn.Dropout(dropout))
-            if batchnorm:
-                main_path.append(nn.BatchNorm2d(out_c))
-            main_path.append(ACTIVATIONS[activation_type](**activation_params))
+        for i, (in_c, out_c, ksize) in enumerate(zip([in_channels] + channels, channels, kernel_sizes)):
+            main_path.append(nn.Conv2d(in_c, out_c, ksize, padding='same'))
+            if i != len(channels) - 1:
+                if dropout:
+                    main_path.append(nn.Dropout(dropout))
+                if batchnorm:
+                    main_path.append(nn.BatchNorm2d(out_c))
+                main_path.append(ACTIVATIONS[activation_type](**activation_params))
         self.main_path = nn.Sequential(*main_path)
-        self.shortcut_path = nn.Sequential(nn.Conv2d(in_channels,in_channels, 1, bias=False))
+        shortcut_path = []
+        if in_channels != channels[-1]:
+            shortcut_path.append(nn.Conv2d(in_channels, channels[-1], 1, bias=False))
+        self.shortcut_path = nn.Sequential(*shortcut_path)
         # ========================
 
     def forward(self, x: Tensor):
         # TODO: Implement the forward pass. Save the main and residual path to `out`.
         out: Tensor = None
         # ====== YOUR CODE: ======
-        print("x", x.shape)
-        main_path_out = self.main_path.forward(x)
-        print("main", main_path_out.shape)
-        short_cut_out = self.shortcut_path.forward(x)
-        print("main", short_cut_out.shape)
-        out = main_path_out + short_cut_out
+        out = self.main_path.forward(x)
+        out += self.shortcut_path.forward(x)
+        out = nn.ReLU()(out)
         # ========================
         out = torch.relu(out)
         return out

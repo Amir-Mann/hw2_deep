@@ -222,7 +222,7 @@ class Trainer(abc.ABC):
             pbar_file.close()
 
         return EpochResult(losses=losses, accuracy=accuracy)
-print_once = []
+
 class ClassifierTrainer(Trainer):
     """
     Trainer for our Classifier-based models.
@@ -262,21 +262,12 @@ class ClassifierTrainer(Trainer):
         #  - Update parameters
         #  - Classify and calculate number of correct predictions
         # ====== YOUR CODE: ======
-        
-        if not print_once:
-            print(y)
-        print_once.append(1)
         scores = self.model(X)
         probas = self.model.predict_proba_scores(scores)
-        if len(print_once) > 6:
-            pass#y[1] = 6
         batch_loss = self.loss_fn(probas, y)
         
         self.optimizer.zero_grad()
         batch_loss.backward()
-        for p in self.model.parameters():
-            print(p.grad.norm().item(), end=",")
-        print("batch fin:")
         self.optimizer.step()
         
         y_prad = self.model.classify_scores(scores)
