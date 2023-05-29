@@ -199,10 +199,10 @@ class ResidualBlock(nn.Module):
         # ====== YOUR CODE: ======
         main_path = []
         for i, (in_c, out_c, ksize) in enumerate(zip([in_channels] + channels, channels, kernel_sizes)):
-            main_path.append(nn.Conv2d(in_c, out_c, ksize, padding='same'))
+            main_path.append(nn.Conv2d(in_c, out_c, ksize, padding='same', bias=True))
             if i != len(channels) - 1:
-                if dropout:
-                    main_path.append(nn.Dropout(dropout))
+                if dropout != 0:
+                    main_path.append(nn.Dropout2d(dropout))
                 if batchnorm:
                     main_path.append(nn.BatchNorm2d(out_c))
                 main_path.append(ACTIVATIONS[activation_type](**activation_params))
@@ -217,9 +217,8 @@ class ResidualBlock(nn.Module):
         # TODO: Implement the forward pass. Save the main and residual path to `out`.
         out: Tensor = None
         # ====== YOUR CODE: ======
-        out = self.main_path.forward(x)
-        out += self.shortcut_path.forward(x)
-        out = nn.ReLU()(out)
+        out = self.main_path(x)
+        out += self.shortcut_path(x)
         # ========================
         out = torch.relu(out)
         return out
