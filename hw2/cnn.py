@@ -261,7 +261,10 @@ class ResidualBottleneckBlock(ResidualBlock):
         #  Initialize the base class in the right way to produce the bottleneck block
         #  architecture.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        input_channels = in_out_channels
+        inner_and_last_channels = [inner_channels[0]] + inner_channels + [in_out_channels]
+        all_kernel_sizes = [1] + inner_kernel_sizes + [1]
+        super().__init__(in_channels=input_channels, channels=inner_and_last_channels, kernel_sizes=all_kernel_sizes, **kwargs)
         # ========================
 
 
