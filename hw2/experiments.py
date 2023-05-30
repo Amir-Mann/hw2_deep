@@ -107,7 +107,22 @@ def cnn_experiment(
     #   for you automatically.
     fit_res = None
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    
+    in_channel = 3
+    channels = [filter_num for filter_num in filters_per_layer for _ in range(layers_per_block)]
+    cnn_model = model_cls(in_channel, 10, channels, pool_every, hidden_dims=hidden_dims)
+    classifier = ArgMaxClassifier(cnn_model)
+    
+    loss_fn = torch.nn.CrossEntropyLoss()
+    momentum = 0.2
+    optimizer = torch.optim.SGD(classifier.parameters(), lr=lr, momentum=momentum, weight_decay=reg)
+    
+    trainer = ClassifierTrainer(classifier, loss_fn, optimizer, device=device)
+    
+    dl_train = DataLoader(ds_train, bs_train, shuffle=True)
+    dl_test = DataLoader(ds_test, bs_test, shuffle=True)
+    
+    fit_res = trainer.fit(dl_train, dl_test, epochs, checkpoints, early_stopping, 1)
     # ========================
 
     save_experiment(run_name, out_dir, cfg, fit_res)
