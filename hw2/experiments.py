@@ -125,7 +125,7 @@ def cnn_experiment(
     dl_train = DataLoader(ds_train, bs_train, shuffle=True)
     dl_test = DataLoader(ds_test, bs_test, shuffle=True)
     
-    fit_res = trainer.fit(dl_train, dl_test, epochs, checkpoints, early_stopping, 1)
+    fit_res = trainer.fit(dl_train, dl_test, epochs, checkpoints, early_stopping, 999999)
     # ========================
 
     save_experiment(run_name, out_dir, cfg, fit_res)

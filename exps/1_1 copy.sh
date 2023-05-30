@@ -56,7 +56,7 @@ source $CONDA_HOME/etc/fprofile.d/conda.sh
 conda activate $CONDA_ENV
 
 # Run python with the args to the script
-python -m hw2.experiments run-exp --epochs 10 -s 20773 -P 1 -H 69 42 --checkpoints 234 -n exp1_1_L2_K32 -K 32 -L 2
+python -m hw2.experiments run-exp --epochs 10 -s 20773 -P 1 -H 69 42 -n exp1_1_L2_K32 -K 32 -L 2
 
 echo "*** SLURM BATCH JOB '$JOB_NAME' DONE ***"
 EOF
