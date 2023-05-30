@@ -110,7 +110,10 @@ def cnn_experiment(
     
     in_size = (3, 32, 32)
     channels = [filter_num for filter_num in filters_per_layer for _ in range(layers_per_block)]
-    cnn_model = model_cls(in_size, 10, channels, pool_every, hidden_dims=hidden_dims, pooling_params={"kernel_size":2})
+    kwargs = {"pooling_params" : {"kernel_size":2}, "hidden_dims" : hidden_dims}
+    if model_type.lower() == "cnn":
+        kwargs["conv_params"] = {"kernel_size" : 3, "padding" : "same"}
+    cnn_model = model_cls(in_size, 10, channels, pool_every, **kwargs)
     classifier = ArgMaxClassifier(cnn_model)
     
     loss_fn = torch.nn.CrossEntropyLoss()
