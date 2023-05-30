@@ -198,7 +198,6 @@ class ResidualBlock(nn.Module):
         #    correct comparison in the test.
         # ====== YOUR CODE: ======
         main_path = []
-        print("here")
         for i, (in_c, out_c, ksize) in enumerate(zip([in_channels] + channels, channels, kernel_sizes)):
             main_path.append(nn.Conv2d(in_c, out_c, ksize, padding='same', bias=True))
             if i != len(channels) - 1:
@@ -316,33 +315,20 @@ class ResNet(CNN):
         # ====== YOUR CODE: ======
         all_channels = [in_channels] + self.channels
         PoolingClass = POOLINGS[self.pooling_type]
-        flag = True
-        for i in range(1, len(all_channels), self.pool_every): #check if the number of input and output channels match for each group of P convolutions.
-            if all_channels[i] != all_channels[1]:
-                flag = False
-        if all_channels[-1] != all_channels[1]:
-            flag = False
-            
-        if self.bottleneck == True and flag:
-            layers.append(nn.Conv2d(all_channels[0], all_channels[1], 1))
-            for i in range(1, len(all_channels), self.pool_every):
-                current_channels = all_channels[i: min(len(all_channels), i + self.pool_every)]
-                inner_kernel_sizes=[3]*(len(current_channels) - 2)
-                print(current_channels)
-                print(current_channels[1:-1])
-                layers.append(ResidualBottleneckBlock(current_channels[0], current_channels[1:-1],
-                                                           inner_kernel_sizes, batchnorm=self.batchnorm, dropout=self.dropout, activation_type=self.activation_type,
-                                                           activation_params=self.activation_params))
-                if len(current_channels) == self.pool_every: #if this is not the remaining
-                    layers.append(PoolingClass(**self.pooling_params))
-        else: 
-            for i in range(0, len(all_channels), self.pool_every):    
+        for i in range(0, len(all_channels) - 1, self.pool_every):    
+            if not self.bottleneck or all_channels[i] != all_channels[i + 1]:
                 current_channels = all_channels[i: min(len(all_channels), i + self.pool_every + 1)]
                 inner_kernel_sizes=[3]*(len(current_channels) - 1)
                 layers.append(ResidualBlock(current_channels[0], current_channels[1:], inner_kernel_sizes, self.batchnorm,
                                                  self.dropout, self.activation_type, self.activation_params))
-                if len(current_channels) == self.pool_every + 1: #if this is not the remaining
-                    layers.append(PoolingClass(**self.pooling_params))
+            else:
+                current_channels = all_channels[i + 1: min(len(all_channels), i + 1 + self.pool_every)]
+                inner_kernel_sizes=[3]*(len(current_channels) - 2)
+                layers.append(ResidualBottleneckBlock(current_channels[0], current_channels[1:-1],
+                                                    inner_kernel_sizes, batchnorm=self.batchnorm, dropout=self.dropout, activation_type=self.activation_type,
+                                                    activation_params=self.activation_params))
+            if len(current_channels) == self.pool_every + int(not self.bottleneck or all_channels[i] != all_channels[i + 1]): #if this is not the remaining
+                layers.append(PoolingClass(**self.pooling_params))
         # ========================
         seq = nn.Sequential(*layers)
         return seq
