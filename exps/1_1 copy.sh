@@ -28,7 +28,7 @@
 NUM_NODES=1
 NUM_CORES=2
 NUM_GPUS=1
-JOB_NAME="exp 1.1"
+JOB_NAME="exp1.1"
 MAIL_USER="amir.manne@campus.technion.ac.il"
 MAIL_TYPE=ALL # Valid values are NONE, BEGIN, END, FAIL, REQUEUE, ALL
 
@@ -52,11 +52,11 @@ echo "*** SLURM BATCH JOB '$JOB_NAME' STARTING ***"
 
 # Setup the conda env
 echo "*** Activating environment $CONDA_ENV ***"
-source $CONDA_HOME/etc/profile.d/conda.sh
+source $CONDA_HOME/etc/fprofile.d/conda.sh
 conda activate $CONDA_ENV
 
 # Run python with the args to the script
-python -m hw2.experiments run-exp --epochs 10 -s 20773 -P 1 --checkpoints exp1_1_L2_K32.cp -n exp1_1_L2_K32 -K 32 -L 2
+python -m hw2.experiments run-exp --epochs 10 -s 20773 -P 1 -H 69 42 --checkpoints 234 -n exp1_1_L2_K32 -K 32 -L 2
 
 echo "*** SLURM BATCH JOB '$JOB_NAME' DONE ***"
 EOF

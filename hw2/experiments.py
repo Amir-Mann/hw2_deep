@@ -214,8 +214,8 @@ def parse_cli():
         help="Save model checkpoints to this file when test " "accuracy improves",
         default=None,
     )
-    sp_exp.add_argument("--lr", type=float, help="Learning rate", default=1e-3)
-    sp_exp.add_argument("--reg", type=float, help="L2 regularization", default=1e-3)
+    sp_exp.add_argument("--lr", type=float, help="Learning rate", default=0.1)
+    sp_exp.add_argument("--reg", type=float, help="L2 regularization", default=0.01)
 
     # # Model
     sp_exp.add_argument(
