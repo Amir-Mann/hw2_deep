@@ -85,10 +85,10 @@ class Trainer(abc.ABC):
             # ====== YOUR CODE: ======
             train_result = self.train_epoch(dl_train, verbose=verbose)
             train_acc.append(train_result.accuracy)
-            train_loss.extend([loss.detach() for loss in train_result.losses])
+            train_loss.extend([float(loss.detach().item()) for loss in train_result.losses])
             test_result = self.test_epoch(dl_test, verbose=verbose)
             test_acc.append(test_result.accuracy)
-            test_loss.extend([loss.detach() for loss in test_result.losses])
+            test_loss.extend([float(loss.detach().item()) for loss in test_result.losses])
             # ========================
 
             # TODO:
