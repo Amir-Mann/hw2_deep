@@ -83,12 +83,12 @@ class Trainer(abc.ABC):
             #  - Use the train/test_epoch methods.
             #  - Save losses and accuracies in the lists above.
             # ====== YOUR CODE: ======
-            train_results = self.train_epoch(dl_train, verbose=verbose)
-            train_acc.append(train_results.accuracy)
-            train_loss.extend([loss.detach() for loss in train_results.losses])
-            test_results = self.test_epoch(dl_test, verbose=verbose)
-            test_acc.append(test_results.accuracy)
-            test_loss.extend([loss.detach() for loss in test_results.losses])
+            train_result = self.train_epoch(dl_train, verbose=verbose)
+            train_acc.append(train_result.accuracy)
+            train_loss.extend([loss.detach() for loss in train_result.losses])
+            test_result = self.test_epoch(dl_test, verbose=verbose)
+            test_acc.append(test_result.accuracy)
+            test_loss.extend([loss.detach() for loss in test_result.losses])
             # ========================
 
             # TODO:
@@ -97,14 +97,18 @@ class Trainer(abc.ABC):
             #  - Optional: Implement checkpoints. You can use the save_checkpoint
             #    method on this class to save the model to the file specified by
             #    the checkpoints argument.
-            continue
             if best_acc is None or test_result.accuracy > best_acc:
                 # ====== YOUR CODE: ======
-                raise NotImplementedError()
+                best_acc = test_result.accuracy
+                epochs_without_improvement = 0
+                if checkpoints:
+                    self.save_checkpoint(checkpoints)
                 # ========================
             else:
                 # ====== YOUR CODE: ======
-                raise NotImplementedError()
+                epochs_without_improvement += 1
+                if early_stopping and epochs_without_improvement >= early_stopping:
+                    break     
                 # ========================
 
         return FitResult(actual_num_epochs, train_loss, train_acc, test_loss, test_acc)
