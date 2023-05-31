@@ -56,9 +56,9 @@ source $CONDA_HOME/etc/profile.d/conda.sh
 conda activate $CONDA_ENV
 
 # Run python with the args to the script
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 -n exp1_3_L2_K64-128 -K 64 128 -L 2
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_3_L3_K64-128 -K 64 128 -L 3
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_3_L4_K64-128 -K 64 128 -L 4
+python -m hw2.experiments run-exp -s 20773 --lr 0.0004 --reg 0.00006 -H 90 -P 1 -n exp1_3_L2_K64-128 -K 64 128 -L 2
+python -m hw2.experiments run-exp -s 20773 --lr 0.0004 --reg 0.00006 -H 90 -P 2 -n exp1_3_L3_K64-128 -K 64 128 -L 3
+python -m hw2.experiments run-exp -s 20773 --lr 0.0004 --reg 0.00006 -H 90 -P 2 -n exp1_3_L4_K64-128 -K 64 128 -L 4
 echo "*** SLURM BATCH JOB '$JOB_NAME' DONE ***"
 EOF
 

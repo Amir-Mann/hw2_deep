@@ -56,14 +56,14 @@ source $CONDA_HOME/etc/profile.d/conda.sh
 conda activate $CONDA_ENV
 
 # Run python with the args to the script
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 -n exp1_1_L2_K32 -K 32 -L 2
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_1_L4_K32 -K 32 -L 4
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_1_L8_K32 -K 32 -L 8
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 5 -n exp1_1_L16_K32 -K 32 -L 16
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 -n exp1_1_L2_K64 -K 64 -L 2
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_1_L4_K64 -K 64 -L 4
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_1_L8_K64 -K 64 -L 8
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 5 -n exp1_1_L16_K64 -K 64 -L 16
+python -m hw2.experiments run-exp -s 20773 --lr 0.0004 --reg 0.00006 -H 90 -P 1 -n exp1_1_L2_K32 -K 32 -L 2
+python -m hw2.experiments run-exp -s 20773 --lr 0.0004 --reg 0.00006 -H 90 -P 2 -n exp1_1_L4_K32 -K 32 -L 4
+python -m hw2.experiments run-exp -s 20773 --lr 0.0004 --reg 0.00006 -H 90 -P 2 -n exp1_1_L8_K32 -K 32 -L 8
+python -m hw2.experiments run-exp -s 20773 --lr 0.0004 --reg 0.00006 -H 90 -P 5 -n exp1_1_L16_K32 -K 32 -L 16
+python -m hw2.experiments run-exp -s 20773 --lr 0.0004 --reg 0.00006 -H 90 -P 1 -n exp1_1_L2_K64 -K 64 -L 2
+python -m hw2.experiments run-exp -s 20773 --lr 0.0004 --reg 0.00006 -H 90 -P 2 -n exp1_1_L4_K64 -K 64 -L 4
+python -m hw2.experiments run-exp -s 20773 --lr 0.0004 --reg 0.00006 -H 90 -P 2 -n exp1_1_L8_K64 -K 64 -L 8
+python -m hw2.experiments run-exp -s 20773 --lr 0.0004 --reg 0.00006 -H 90 -P 5 -n exp1_1_L16_K64 -K 64 -L 16
 
 echo "*** SLURM BATCH JOB '$JOB_NAME' DONE ***"
 EOF
