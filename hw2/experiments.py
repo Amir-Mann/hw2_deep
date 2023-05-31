@@ -140,8 +140,6 @@ def cnn_experiment(
     if model_type.lower() == "cnn":
         kwargs["conv_params"] = {"kernel_size" : 3, "padding" : "same"}
     cnn_model = model_cls(in_size, 10, channels, pool_every, **kwargs)
-    assert cnn_model.feature_extractor(torch.ones(in_size)).shape[1] != 1
-    assert cnn_model.feature_extractor(torch.ones(in_size)).shape[2] != 1
     classifier = ArgMaxClassifier(cnn_model)
     
     loss_fn = torch.nn.CrossEntropyLoss()
