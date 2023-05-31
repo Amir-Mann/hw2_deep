@@ -152,7 +152,7 @@ def cnn_experiment(
 
     print(f"Training {run_name}.")
     fit_res = trainer.fit(dl_train, dl_test, epochs, checkpoints, early_stopping, print_every=0)
-    print(f"Last train accuracy for {run_name}: {fit_res.train_acc[-1]}")
+    print(f"Max train, test accuracy for {run_name}: {max(fit_res.train_acc), max(fit_res.test_acc)}")
     # ========================
 
     save_experiment(run_name, out_dir, cfg, fit_res)
