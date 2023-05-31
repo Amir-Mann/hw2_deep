@@ -28,7 +28,7 @@
 NUM_NODES=1
 NUM_CORES=2
 NUM_GPUS=1
-JOB_NAME="test_hp"
+JOB_NAME="exp1.1"
 MAIL_USER="amir.mann@campus.technion.ac.il"
 MAIL_TYPE=ALL # Valid values are NONE, BEGIN, END, FAIL, REQUEUE, ALL
 
@@ -52,16 +52,19 @@ echo "*** SLURM BATCH JOB '$JOB_NAME' STARTING ***"
 
 # Setup the conda env
 echo "*** Activating environment $CONDA_ENV ***"
-source $CONDA_HOME/etc/fprofile.d/conda.sh
+source $CONDA_HOME/etc/profile.d/conda.sh
 conda activate $CONDA_ENV
 
 # Run python with the args to the script
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 --epochs 30 --reg 0.0000001 --lr 0.0005 -n test_L2_K32_lr0.0000001 -K 32 -L 2
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 --epochs 30 --reg 0.0000005 --lr 0.0005 -n test_L2_K32_lr0.0000005 -K 32 -L 2
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 --epochs 30 --reg 0.000001  --lr 0.0005 -n test_L2_K32_lr0.000001  -K 32 -L 2
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 --epochs 30 --reg 0.000005  --lr 0.0005 -n test_L2_K32_lr0.000005  -K 32 -L 2
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 --epochs 30 --reg 0.00001   --lr 0.0005 -n test_L2_K32_lr0.00001   -K 32 -L 2
-python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 --epochs 30 --reg 0.00005   --lr 0.0005 -n test_L2_K32_lr0.00005   -K 32 -L 2
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 -n exp1_2_L2_K32 -K 32 -L 2
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 -n exp1_2_L2_K64 -K 64 -L 2
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 -n exp1_2_L2_K128 -K 128 -L 2
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_2_L4_K32 -K 32 -L 4
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_2_L4_K64 -K 64 -L 4
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_2_L4_K128 -K 128 -L 4
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 3 -n exp1_2_L8_K32 -K 32 -L 8
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 3 -n exp1_2_L8_K64 -K 64 -L 8
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 3 -n exp1_2_L8_K128 -K 128 -L 8
 
 echo "*** SLURM BATCH JOB '$JOB_NAME' DONE ***"
 EOF
