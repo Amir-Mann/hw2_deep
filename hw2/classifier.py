@@ -178,7 +178,16 @@ def plot_decision_boundary_2d(
     #  plot a contour map.
     x1_grid, x2_grid, y_hat = None, None, None
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    x1_min, x1_max = x[:, 0].min().item() - 1, x[:, 0].max().item() + 1
+    x2_min, x2_max = x[:, 1].min().item() - 1, x[:, 1].max().item() + 1
+    x1_grid, x2_grid = torch.meshgrid(
+        torch.arange(x1_min, x1_max, dx),
+        torch.arange(x2_min, x2_max, dx),
+    )
+
+    x_grid = torch.stack([x1_grid.reshape(-1), x2_grid.reshape(-1)], dim=1)
+    y_hat = classifier.classify(x_grid)
+    y_hat = y_hat.reshape(x1_grid.shape)
     # ========================
 
     # Plot the decision boundary as a filled contour
@@ -210,9 +219,14 @@ def select_roc_thresh(
     #  Calculate the index of the optimal threshold as optimal_thresh_idx.
     #  Calculate the optimal threshold as optimal_thresh.
     fpr, tpr, thresh = None, None, None
-    optimal_theresh_idx, optimal_thresh = None, None
+    optimal_thresh_idx, optimal_thresh = None, None
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    proba_scores = (classifier.predict_proba(x)).detach()
+    fpr, tpr, thresh = roc_curve(y, proba_scores[:,1]) #true label?
+    fnr = 1 - tpr
+    diffs = (fnr - fpr) * (fnr - fpr)
+    optimal_thresh_idx = torch.argmin(torch.tensor(diffs))
+    optimal_thresh = float((thresh[optimal_thresh_idx]).item())
     # ========================
 
     if plot:
