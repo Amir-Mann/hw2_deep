@@ -63,7 +63,7 @@ class MLP(nn.Module):
         for i in range(len(dims)):
             layers.append(nn.Linear(allDims[i], allDims[i + 1]))
             if isinstance(nonlins[i], str) or nonlins[i] is None:
-                activation = ACTIVATIONS[nonlins[i]]()
+                activation = ACTIVATIONS[nonlins[i]](**ACTIVATION_DEFAULT_KWARGS[nonlins[i]])
             else:
                 activation = nonlins[i]
             layers.append(activation)

@@ -10,7 +10,6 @@ from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 
 from cs236781.train_results import FitResult, BatchResult, EpochResult
-
 from .classifier import Classifier
 
 
@@ -83,12 +82,17 @@ class Trainer(abc.ABC):
             #  - Use the train/test_epoch methods.
             #  - Save losses and accuracies in the lists above.
             # ====== YOUR CODE: ======
-            train_result = self.train_epoch(dl_train, verbose=verbose)
+            kw["verbose"] = verbose
+            train_result = self.train_epoch(dl_train, **kw)
             train_acc.append(train_result.accuracy)
-            train_loss.extend([float(loss.detach().item()) for loss in train_result.losses])
-            test_result = self.test_epoch(dl_test, verbose=verbose)
+            losses_without_grad = [x.detach() for x in train_result.losses]
+            train_loss += losses_without_grad   
+            test_result = self.test_epoch(dl_test, **kw)
             test_acc.append(test_result.accuracy)
-            test_loss.extend([float(loss.detach().item()) for loss in test_result.losses])
+            test_loss += [x.detach() for x in test_result.losses]
+            
+            #creating detatched version of the tendors in train loss
+            
             # ========================
 
             # TODO:
@@ -267,8 +271,7 @@ class ClassifierTrainer(Trainer):
         #  - Classify and calculate number of correct predictions
         # ====== YOUR CODE: ======
         scores = self.model(X)
-        probas = self.model.predict_proba_scores(scores)
-        batch_loss = self.loss_fn(probas, y)
+        batch_loss = self.loss_fn(scores, y)
         
         self.optimizer.zero_grad()
         batch_loss.backward()
@@ -295,11 +298,11 @@ class ClassifierTrainer(Trainer):
             #  - Forward pass
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
-            scores = self.model(X)
-            probas = self.model.predict_proba_scores(scores)
-            batch_loss = self.loss_fn(probas, y)
-            y_prad = self.model.classify_scores(scores)
-            num_correct = (y_prad == y).sum().item()
+            forward_scores = self.model.forward(X.view(X.size(0), -1))
+            batch_loss = self.loss_fn(forward_scores, y)
+                        
+            y_pred = self.model.classify_scores(forward_scores)
+            num_correct = (y_pred == y).sum().item()   
             # ========================
 
         return BatchResult(batch_loss, num_correct)
@@ -308,7 +311,9 @@ class ClassifierTrainer(Trainer):
 class LayerTrainer(Trainer):
     def __init__(self, model, loss_fn, optimizer):
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.model = model
+        self.loss_fn = loss_fn
+        self.optimizer = optimizer
         # ========================
 
     def train_batch(self, batch) -> BatchResult:
@@ -321,7 +326,13 @@ class LayerTrainer(Trainer):
         #  - Calculate number of correct predictions (make sure it's an int,
         #    not a tensor) as num_correct.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        forward_output = self.model.forward(X.view(X.size(0), -1))
+        loss = self.loss_fn.forward(forward_output, y)
+        dl_doutput = self.loss_fn.backward(loss)
+        self.model.backward(dl_doutput)
+        self.optimizer.step()
+        y_pred = torch.argmax(forward_output, dim = 1)
+        num_correct = (y_pred == y).sum().item()
         # ========================
 
         return BatchResult(loss, num_correct)
@@ -331,7 +342,10 @@ class LayerTrainer(Trainer):
 
         # TODO: Evaluate the Layer model on one batch of data.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        forward_output = self.model.forward(X.view(X.size(0), -1))
+        loss = self.loss_fn.forward(forward_output, y)
+        y_pred = torch.argmax(forward_output, dim = 1)
+        num_correct = (y_pred == y).sum().item()
         # ========================
 
         return BatchResult(loss, num_correct)
