@@ -132,7 +132,9 @@ def cnn_experiment(
     fit_res = None
     # ====== YOUR CODE: ======
     
-    in_size = (3, 32, 32)
+    x0,_ = ds_train[0]
+    in_size = x0.shape
+    
     channels = [filter_num for filter_num in filters_per_layer for _ in range(layers_per_block)]
     kwargs = {"pooling_params" : {"kernel_size" : 2}, "hidden_dims" : hidden_dims}
     if model_type.lower() == "cnn":
@@ -151,7 +153,7 @@ def cnn_experiment(
     dl_test = DataLoader(ds_test, bs_test, shuffle=True)
 
     print(f"Training {run_name}.")
-    fit_res = trainer.fit(dl_train, dl_test, epochs, checkpoints, early_stopping, print_every=0)
+    fit_res = trainer.fit(dl_train, dl_test, epochs, checkpoints, early_stopping, print_every=1)
     print(f"Last train accuracy for {run_name}: {fit_res.train_acc[-1]}")
     # ========================
 

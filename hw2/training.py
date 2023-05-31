@@ -85,11 +85,11 @@ class Trainer(abc.ABC):
             kw["verbose"] = verbose
             train_result = self.train_epoch(dl_train, **kw)
             train_acc.append(train_result.accuracy)
-            losses_without_grad = [x.detach() for x in train_result.losses]
+            losses_without_grad = [float(x.detach().item()) for x in train_result.losses]
             train_loss += losses_without_grad   
             test_result = self.test_epoch(dl_test, **kw)
             test_acc.append(test_result.accuracy)
-            test_loss += [x.detach() for x in test_result.losses]
+            test_loss += [float(x.detach().item()) for x in test_result.losses]
             
             #creating detatched version of the tendors in train loss
             
