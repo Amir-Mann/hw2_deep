@@ -45,9 +45,33 @@ def mlp_experiment(
     #  Note: use print_every=0, verbose=False, plot=False where relevant to prevent
     #  output from this function.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    #temp_batch, _ = next(iter(dl_test)) #this is for the general case we dont know the input dims so we need to check
+    #input_dim = temp_batch.shape[1]
+    input_dim = 2
+    dims=[width]*depth + [2]
+    model = MLP(in_dim=input_dim, dims=dims, nonlins=[*['tanh']*depth, None])
+    bin_classifier = BinaryClassifier(model)
+    loss_func = torch.nn.CrossEntropyLoss()
+    optim_params = dict(lr = 0.0025,
+                        weight_decay = 0.001)
+    optimizer =  torch.optim.Adam(params=model.parameters(), **optim_params)
+    trainer = ClassifierTrainer(model= bin_classifier, loss_fn=loss_func, optimizer=optimizer)
+    fit_result = trainer.fit(dl_train, dl_valid, n_epochs, print_every=0, verbose=False)
+    valid_acc = fit_result.test_acc[-1]
+    count = 0
+    thresh = 0
+    for x, y in dl_valid:
+        count += 1
+        thresh += select_roc_thresh(bin_classifier, x, y)
+    thresh /= count
+    bin_classifier.threshold = thresh
+    test_result = trainer.test_epoch(dl_test, verbose=False)
+    test_acc = test_result.accuracy
+    
+    from cs236781.plot import plot_fit
+    plot_fit(fit_result, log_loss=False, train_test_overlay=True);  
     # ========================
-    return model, thresh, valid_acc, test_acc
+    return bin_classifier, thresh, valid_acc, test_acc
 
 
 def cnn_experiment(

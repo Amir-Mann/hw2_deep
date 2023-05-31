@@ -265,6 +265,7 @@ class Linear(Layer):
         :return: Gradient with respect to layer input, shape (N, Din)
         """
         x = self.grad_cache["x"]
+        
 
         # TODO: Compute
         #   - dx, the gradient of the loss with respect to x
@@ -281,6 +282,7 @@ class Linear(Layer):
 
     def __repr__(self):
         return f"Linear({self.in_features=}, {self.out_features=})"
+        
 
 
 class CrossEntropyLoss(Layer):

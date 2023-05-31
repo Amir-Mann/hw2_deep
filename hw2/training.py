@@ -10,7 +10,6 @@ from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 
 from cs236781.train_results import FitResult, BatchResult, EpochResult
-
 from .classifier import Classifier
 
 
@@ -83,12 +82,14 @@ class Trainer(abc.ABC):
             #  - Use the train/test_epoch methods.
             #  - Save losses and accuracies in the lists above.
             # ====== YOUR CODE: ======
-            train_results = self.train_epoch(dl_train, verbose=verbose)
-            train_acc.append(train_results.accuracy)
-            train_loss.extend([loss.detach() for loss in train_results.losses])
-            test_results = self.test_epoch(dl_test, verbose=verbose)
-            test_acc.append(test_results.accuracy)
-            test_loss.extend([loss.detach() for loss in test_results.losses])
+            kw["verbose"] = verbose
+            train_result = self.train_epoch(dl_train, **kw)
+            train_acc.append(train_result.accuracy)
+            losses_without_grad = [x.detach() for x in train_result.losses]
+            train_loss += losses_without_grad   
+            test_result = self.test_epoch(dl_test, **kw)
+            test_acc.append(test_result.accuracy)
+            test_loss += [x.detach() for x in test_result.losses]
             # ========================
 
             # TODO:
@@ -97,14 +98,18 @@ class Trainer(abc.ABC):
             #  - Optional: Implement checkpoints. You can use the save_checkpoint
             #    method on this class to save the model to the file specified by
             #    the checkpoints argument.
-            continue
             if best_acc is None or test_result.accuracy > best_acc:
                 # ====== YOUR CODE: ======
-                raise NotImplementedError()
+                best_acc = test_result.accuracy
+                epochs_without_improvement = 0
+                if checkpoints:
+                    self.save_checkpoint(checkpoints)
                 # ========================
             else:
                 # ====== YOUR CODE: ======
-                raise NotImplementedError()
+                epochs_without_improvement += 1
+                if early_stopping and epochs_without_improvement >= early_stopping:
+                    break     
                 # ========================
 
         return FitResult(actual_num_epochs, train_loss, train_acc, test_loss, test_acc)
@@ -263,8 +268,7 @@ class ClassifierTrainer(Trainer):
         #  - Classify and calculate number of correct predictions
         # ====== YOUR CODE: ======
         scores = self.model(X)
-        probas = self.model.predict_proba_scores(scores)
-        batch_loss = self.loss_fn(probas, y)
+        batch_loss = self.loss_fn(scores, y)
         
         self.optimizer.zero_grad()
         batch_loss.backward()
@@ -291,11 +295,11 @@ class ClassifierTrainer(Trainer):
             #  - Forward pass
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
-            scores = self.model(X)
-            probas = self.model.predict_proba_scores(scores)
-            batch_loss = self.loss_fn(probas, y)
-            y_prad = self.model.classify_scores(scores)
-            num_correct = (y_prad == y).sum().item()
+            forward_scores = self.model.forward(X.view(X.size(0), -1))
+            batch_loss = self.loss_fn(forward_scores, y)
+                        
+            y_pred = self.model.classify_scores(forward_scores)
+            num_correct = (y_pred == y).sum().item()   
             # ========================
 
         return BatchResult(batch_loss, num_correct)
