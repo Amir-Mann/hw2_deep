@@ -28,8 +28,8 @@
 NUM_NODES=1
 NUM_CORES=2
 NUM_GPUS=1
-JOB_NAME="exp 1.1"
-MAIL_USER="amir.manne@campus.technion.ac.il"
+JOB_NAME="exp1.1"
+MAIL_USER="amir.mann@campus.technion.ac.il"
 MAIL_TYPE=ALL # Valid values are NONE, BEGIN, END, FAIL, REQUEUE, ALL
 
 ###
@@ -56,14 +56,14 @@ source $CONDA_HOME/etc/profile.d/conda.sh
 conda activate $CONDA_ENV
 
 # Run python with the args to the script
-python -m hw2.experiments run-exp -s 20773 -H 69 42 -P 1 -n exp1_1_L2_K32 -K 32 -L 2
-python -m hw2.experiments run-exp -s 20773 -H 69 42 -P 2 -n exp1_1_L4_K32 -K 32 -L 4
-python -m hw2.experiments run-exp -s 20773 -H 69 42 -P 2 -n exp1_1_L8_K32 -K 32 -L 8
-python -m hw2.experiments run-exp -s 20773 -H 69 42 -P 5 -n exp1_1_L16_K32 -K 32 -L 16
-python -m hw2.experiments run-exp -s 20773 -H 69 42 -P 1 -n exp1_1_L2_K64 -K 64 -L 2
-python -m hw2.experiments run-exp -s 20773 -H 69 42 -P 2 -n exp1_1_L4_K64 -K 64 -L 4
-python -m hw2.experiments run-exp -s 20773 -H 69 42 -P 2 -n exp1_1_L8_K64 -K 64 -L 8
-python -m hw2.experiments run-exp -s 20773 -H 69 42 -P 5 -n exp1_1_L16_K64 -K 64 -L 16
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 -n exp1_1_L2_K32 -K 32 -L 2
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_1_L4_K32 -K 32 -L 4
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_1_L8_K32 -K 32 -L 8
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 5 -n exp1_1_L16_K32 -K 32 -L 16
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 1 -n exp1_1_L2_K64 -K 64 -L 2
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_1_L4_K64 -K 64 -L 4
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 2 -n exp1_1_L8_K64 -K 64 -L 8
+python -m hw2.experiments run-exp -s 20773 -H 90 -P 5 -n exp1_1_L16_K64 -K 64 -L 16
 
 echo "*** SLURM BATCH JOB '$JOB_NAME' DONE ***"
 EOF

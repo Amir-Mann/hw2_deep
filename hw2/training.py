@@ -298,7 +298,7 @@ class ClassifierTrainer(Trainer):
             #  - Forward pass
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
-            forward_scores = self.model.forward(X.view(X.size(0), -1))
+            forward_scores = self.model.forward(X)
             batch_loss = self.loss_fn(forward_scores, y)
                         
             y_pred = self.model.classify_scores(forward_scores)

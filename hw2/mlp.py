@@ -78,7 +78,8 @@ class MLP(nn.Module):
         # TODO: Implement the model's forward pass. Make sure the input and output
         #  shapes are as expected.
         # ====== YOUR CODE: ======
-        assert(x.shape[1] == self.in_dim)
+        ret = x.view(x.size(0), -1)
+        assert(ret.shape[1] == self.in_dim)
         ret = self.layers(x)
         assert(ret.shape[1] == self.out_dim)
         assert(ret.shape[0] == x.shape[0])
