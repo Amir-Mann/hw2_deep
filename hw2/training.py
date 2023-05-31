@@ -82,11 +82,12 @@ class Trainer(abc.ABC):
             #  - Use the train/test_epoch methods.
             #  - Save losses and accuracies in the lists above.
             # ====== YOUR CODE: ======
-            train_result = self.train_epoch(dl_train, verbose = verbose)
+            kw["verbose"] = verbose
+            train_result = self.train_epoch(dl_train, **kw)
             train_acc.append(train_result.accuracy)
             losses_without_grad = [x.detach() for x in train_result.losses]
             train_loss += losses_without_grad   
-            test_result = self.test_epoch(dl_test, verbose = verbose)
+            test_result = self.test_epoch(dl_test, **kw)
             test_acc.append(test_result.accuracy)
             test_loss += [x.detach() for x in test_result.losses]
             
@@ -269,19 +270,13 @@ class ClassifierTrainer(Trainer):
         #  - Update parameters
         #  - Classify and calculate number of correct predictions
         # ====== YOUR CODE: ======
-        self.optimizer.zero_grad()
         scores = self.model(X)
-        probas = self.model.predict_proba_scores(scores)
-        y_ = y.reshape(-1, 1) # Reshape y to (N,1)
-        zeros = torch.zeros(size=(len(y_), 2), dtype=torch.float32) # (N,C)
-        ones = torch.ones_like(y_, dtype=torch.float32)
-    
-        # scatter: put items from 'src' into 'dest' at indices correspondnig to 'index' along 'dim'
-        y_onehot = torch.scatter(zeros, dim=1, index=y_, src=ones)
+        batch_loss = self.loss_fn(scores, y)
         
-        batch_loss = self.loss_fn(probas, y)
+        self.optimizer.zero_grad()
         batch_loss.backward()
         self.optimizer.step()
+        
         y_prad = self.model.classify_scores(scores)
         num_correct = (y_prad == y).sum().item()
         # ========================
@@ -304,18 +299,8 @@ class ClassifierTrainer(Trainer):
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
             forward_scores = self.model.forward(X.view(X.size(0), -1))
-            probas = self.model.predict_proba_scores(forward_scores)
-            y_ = y.reshape(-1, 1) # Reshape y to (N,1)
-            zeros = torch.zeros(size=(len(y_), 2), dtype=torch.float32) # (N,C)
-            ones = torch.ones_like(y_, dtype=torch.float32)
-        
-            # scatter: put items from 'src' into 'dest' at indices correspondnig to 'index' along 'dim'
-            y_onehot = torch.scatter(zeros, dim=1, index=y_, src=ones)
-            
-            batch_loss = self.loss_fn(probas, y_onehot)
-        
-            batch_loss = self.loss_fn.forward(probas, y)
-            
+            batch_loss = self.loss_fn(forward_scores, y)
+                        
             y_pred = self.model.classify_scores(forward_scores)
             num_correct = (y_pred == y).sum().item()   
             # ========================
