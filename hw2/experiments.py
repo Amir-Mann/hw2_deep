@@ -151,7 +151,7 @@ def cnn_experiment(
     dl_test = DataLoader(ds_test, bs_test, shuffle=True)
 
     print(f"Training {run_name}.")
-    fit_res = trainer.fit(dl_train, dl_test, epochs, checkpoints, early_stopping, print_every=1)
+    fit_res = trainer.fit(dl_train, dl_test, epochs, checkpoints, early_stopping, print_every=0)
     print(f"Last train accuracy for {run_name}: {fit_res.train_acc[-1]}")
     # ========================
 
