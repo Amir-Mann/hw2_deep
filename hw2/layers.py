@@ -97,7 +97,7 @@ class LeakyReLU(Layer):
 
         # TODO: Implement gradient w.r.t. the input x
         # ====== YOUR CODE: ======
-        dx = torch.mul(dout, torch.where(x < 0, self.alpha, 1))
+        dx = torch.mul(dout, torch.where(x < 0, torch.tensor(self.alpha, dtype=x.dtype), torch.tensor(1, dtype=x.dtype)))
         # ========================
 
         return dx
@@ -372,7 +372,7 @@ class Dropout(Layer):
             boby = torch.int(torch.rand_like(x) > self.p)
             out = torch.mul(x, boby)
         else:
-            out = x
+            out = x * (1 - self.p)
             boby = torch.ones_like(x)
         self.grad_cache["boby"] = boby
         # ========================
@@ -500,6 +500,7 @@ class MLP(Layer):
         for in_size, out_size in weights_dims:
             layers.append(Linear(in_size, out_size))
             layers.append(ActivationClass())
+            
         layers.append(Linear(hidden_features[-1], num_classes))
         # ========================
 

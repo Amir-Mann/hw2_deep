@@ -154,7 +154,7 @@ def main():
             best_hp_arch = copy.copy(hp_arch)
             best_hp_optim = copy.copy(hp_optim)
             print()
-            print(f"Found better results, accuracy of train at last epoch: {best_result}")
+            print(f"(e{i}/{iters}) Found better results, accuracy of train at last epoch: {best_result}")
             print(f"hp_arch:  {hp_arch}")
             print(f"hp_optim: {hp_optim}")
     print(f"finished at {datetime.now()}")
