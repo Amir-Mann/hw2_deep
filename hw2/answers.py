@@ -119,27 +119,36 @@ An equation: $e^{i\pi} -1 = 0$
 part2_q2 = r"""
 **Your answer:**
 
+Yes, while training with cross entropy loss it is possible for the loss to increase for a few epochs
+while the test accuracy also icreases.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+And a example of when might this happen is when there is a spesific difficult or misslabled sample in the
+test dataset, which the model predicts to be of the worng class with rising confidency, while also
+improving on most other sample predictions.
+This will cause the loss to expload (because cross entropy heavly punished confident wrong prediction)
+while the overall accuracy would still improve in the testset.
 
 """
 
 part2_q3 = r"""
 **Your answer:**
 
+1. Back propagation is a method for calculating derivatives of loss with respect to different parameters
+   in a deep network and isn't an optimization method. GD is an optimization method that uses the derivative
+   with regard to each parameter reach a minmum of a given loss function, and isn't a
+   method for calculating derivatives.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. GD calculets the gradient over the entire dataset and updates the parameters only once.
+   SGD calculets the gradient over a single sample (or a mini batch in mini-batch SGD) and updates the parametrs only once.
+   GD makes very calculated and slow moves down the loss surface as deffined over the dataset.
+   SGD makes quicker to calculate moves down an aproximation of the loss surfaces of a different example (or mini batch) each time.
 
+3. Becuase SGD is so much faster at preforming each step, it will converge in much shorter time
+   allthough in more steps. SGD also preforms a ort of regularization, by fitting the model only
+   to a small subset of the dataset instead of the whole thing. Often it is not possible to fit the entire
+   dataset into memory, in those cases running GD is not feasible and SGD solves that problem.
+   
+4. 
 """
 
 part2_q4 = r"""
@@ -170,9 +179,9 @@ def part3_arch_hp():
     # TODO: Tweak the MLP architecture hyperparameters.
     # ====== YOUR CODE: ======
     n_layers = 3
-    hidden_dims = 200
-    activation = 'relu'
-    out_activation = 'sigmoid'
+    hidden_dims = 35
+    activation = 'tanh'
+    out_activation = 'none'
     # ========================
     return dict(
         n_layers=n_layers,
@@ -195,8 +204,8 @@ def part3_optim_hp():
     #    Loss classes in torch.nn or one of the loss functions from torch.nn.functional.
     # ====== YOUR CODE: ======
     loss_fn = torch.nn.CrossEntropyLoss()
-    lr = 0.00005
-    weight_decay = 0.00002
+    lr = 0.0025
+    weight_decay = 0.001
     momentum = 0.9
     # ========================
     return dict(lr=lr, weight_decay=weight_decay, momentum=momentum, loss_fn=loss_fn)
@@ -255,7 +264,10 @@ def part4_optim_hp():
     #    What you returns needs to be a callable, so either an instance of one of the
     #    Loss classes in torch.nn or one of the loss functions from torch.nn.functional.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    lr = 0.01
+    weight_decay = 0.0002
+    momentum = 0.9
+    loss_fn = torch.nn.CrossEntropyLoss()
     # ========================
     return dict(lr=lr, weight_decay=weight_decay, momentum=momentum, loss_fn=loss_fn)
 

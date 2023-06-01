@@ -10,7 +10,6 @@ from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 
 from cs236781.train_results import FitResult, BatchResult, EpochResult
-
 from .classifier import Classifier
 
 
@@ -83,12 +82,17 @@ class Trainer(abc.ABC):
             #  - Use the train/test_epoch methods.
             #  - Save losses and accuracies in the lists above.
             # ====== YOUR CODE: ======
-            train_result = self.train_epoch(dl_train)
+            kw["verbose"] = verbose
+            train_result = self.train_epoch(dl_train, **kw)
             train_acc.append(train_result.accuracy)
-            train_loss += train_result.losses   
-            test_result = self.test_epoch(dl_test)
+            losses_without_grad = [float(x.detach().item()) for x in train_result.losses]
+            train_loss += losses_without_grad   
+            test_result = self.test_epoch(dl_test, **kw)
             test_acc.append(test_result.accuracy)
-            test_loss += test_result.losses
+            test_loss += [float(x.detach().item()) for x in test_result.losses]
+            
+            #creating detatched version of the tendors in train loss
+            
             # ========================
 
             # TODO:
@@ -266,14 +270,15 @@ class ClassifierTrainer(Trainer):
         #  - Update parameters
         #  - Classify and calculate number of correct predictions
         # ====== YOUR CODE: ======
-        forward_scores = self.model.forward(X.view(X.size(0), -1))
-        probas = self.model.predict_proba_scores(forward_scores)
-        batch_loss = self.loss_fn.forward(probas, y)
+        scores = self.model(X)
+        batch_loss = self.loss_fn(scores, y)
+        
         self.optimizer.zero_grad()
         batch_loss.backward()
         self.optimizer.step()
-        y_pred = self.model.classify_scores(forward_scores)
-        num_correct = (y_pred == y).sum().item()
+        
+        y_prad = self.model.classify_scores(scores)
+        num_correct = (y_prad == y).sum().item()
         # ========================
 
         return BatchResult(batch_loss, num_correct)
@@ -293,10 +298,9 @@ class ClassifierTrainer(Trainer):
             #  - Forward pass
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
-            forward_scores = self.model.forward(X.view(X.size(0), -1))
-            probas = self.model.predict_proba_scores(forward_scores)
-            batch_loss = self.loss_fn.forward(probas, y)
-            
+            forward_scores = self.model.forward(X)
+            batch_loss = self.loss_fn(forward_scores, y)
+                        
             y_pred = self.model.classify_scores(forward_scores)
             num_correct = (y_pred == y).sum().item()   
             # ========================
