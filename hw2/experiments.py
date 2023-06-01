@@ -86,8 +86,8 @@ def cnn_experiment(
     epochs=100,
     early_stopping=3,
     checkpoints=None,
-    lr=1e-3,
-    reg=1e-3,
+    lr=0.1,
+    reg=0.001,
     # Model params
     filters_per_layer=[64],
     layers_per_block=2,
@@ -131,7 +131,28 @@ def cnn_experiment(
     #   for you automatically.
     fit_res = None
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    
+    x0,_ = ds_train[0]
+    in_size = x0.shape
+    
+    channels = [filter_num for filter_num in filters_per_layer for _ in range(layers_per_block)]
+    kwargs = {"pooling_params" : {"kernel_size" : 2}, "hidden_dims" : hidden_dims}
+    if model_type.lower() == "cnn":
+        kwargs["conv_params"] = {"kernel_size" : 3, "padding" : "same"}
+    cnn_model = model_cls(in_size, 10, channels, pool_every, **kwargs)
+    classifier = ArgMaxClassifier(cnn_model)
+    
+    loss_fn = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(classifier.parameters(), lr=lr, weight_decay=reg)
+    
+    trainer = ClassifierTrainer(classifier, loss_fn, optimizer, device=device)
+    
+    dl_train = DataLoader(ds_train, bs_train, shuffle=True)
+    dl_test = DataLoader(ds_test, bs_test, shuffle=True)
+
+    print(f"Training {run_name}.")
+    fit_res = trainer.fit(dl_train, dl_test, epochs, checkpoints, early_stopping, print_every=0)
+    print(f"Max train, test accuracy for {run_name}: {max(fit_res.train_acc), max(fit_res.test_acc)}")
     # ========================
 
     save_experiment(run_name, out_dir, cfg, fit_res)

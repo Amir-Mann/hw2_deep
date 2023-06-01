@@ -57,19 +57,17 @@ class MLP(nn.Module):
         #  - Either instantiate the activations based on their name or use the provided
         #    instances.
         # ====== YOUR CODE: ======   
-                    
-        self.layers = nn.ModuleList()
-        self.activations = nn.ModuleList()
+        
+        layers = []            
         allDims = [in_dim] + dims
         for i in range(len(dims)):
-            layer = nn.Linear(allDims[i], allDims[i + 1])
-            self.layers.append(layer)       
-        for i in range(len(nonlins)):
+            layers.append(nn.Linear(allDims[i], allDims[i + 1]))
             if isinstance(nonlins[i], str) or nonlins[i] is None:
                 activation = ACTIVATIONS[nonlins[i]](**ACTIVATION_DEFAULT_KWARGS[nonlins[i]])
             else:
                 activation = nonlins[i]
-            self.activations.append(activation)
+            layers.append(activation)
+        self.layers = nn.Sequential(*layers)
         # ========================
 
     def forward(self, x: Tensor) -> Tensor:
@@ -80,12 +78,10 @@ class MLP(nn.Module):
         # TODO: Implement the model's forward pass. Make sure the input and output
         #  shapes are as expected.
         # ====== YOUR CODE: ======
-        assert(x.shape[1] == self.in_dim)
-        ret = x
-        for linear, activation in zip(self.layers, self.activations):
-            ret = linear(ret)
-            ret = activation(ret)
+        ret = x.view(x.size(0), -1)
+        assert(ret.shape[1] == self.in_dim)
+        ret = self.layers(x)
         assert(ret.shape[1] == self.out_dim)
         assert(ret.shape[0] == x.shape[0])
-        return ret 
+        return ret
         # ========================
