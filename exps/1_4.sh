@@ -28,7 +28,7 @@
 NUM_NODES=1
 NUM_CORES=2
 NUM_GPUS=1
-JOB_NAME="exp1.1"
+JOB_NAME="exp1.4"
 MAIL_USER="amir.mann@campus.technion.ac.il"
 MAIL_TYPE=ALL # Valid values are NONE, BEGIN, END, FAIL, REQUEUE, ALL
 
