@@ -322,55 +322,69 @@ part4_q1 = r"""
 
 part5_q1 = r"""
 **Your answer:**
+1. The depths has a varied affect on accuracy in this settings, while deeper model are more expressive
+   and complex, they are also harder to train. We can see that in our case the depth=4 model preformed
+   the best, while the second place was different in depening on the width, but generaly we saw that the
+   depth=8 model didn't cause early stopping - because the optimization is a very hard task.
+   We think that for that reason 4 is a good comprimaize for depth.
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+2. Yes, the networks of depth=16 were not trainable. This is due to the exploding/vanishing gradient
+   phenomenas, after 16 gradients the loss function has very unpredictable effect on the first weight
+   making the task of learning them imposible. We might resolve this problem at least partialy by:
+   a. Adding skip conections between every few conv layers, (resblocks) this would cause the loss derivative
+      to directly effect the first layers of the network.
+   b. Adding Batch Normalization layers in the network can lower the covarient shift, and thus lessening
+      the problem with unscaled multiplicative gradients at the first layers of the network.
 """
 
 part5_q2 = r"""
 **Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+We can see a few interesting trends in the second experiment. First of all we can see that the wider the
+network is the better interms of preformance both on test and train datasets and at any depth. This is
+very different to the mixed results in the first experiment regarding depth. Secondly we can see that
+wider netoworks tend to train in less epochs and reach early stopping faster. We are not certain that 
+this means actuall faster training phase, because each apoch requires more calculations due to around
+quedratic amount of parameters and flops.
+Lastly, we can see that the 128-wide networks which where only trained in this experiment out preform the
+networks of the first experiment, reaching 75% accuracy on test set. Around 3-5% more then the best ones
+there.
 """
 
 part5_q3 = r"""
 **Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+In this experiment we can see that the deeper the network (up to the given bound of 8 layer) is the better
+it preforms on the test set, while all the network can achive overfitting and are early stopped to prevent
+this.
+We can see a werid phenomana is that the network with 6(L=3) layers is trained the fastest, and there is not a
+single trend correltion. We think this is because while the 4(L=2) layers network is not expressive enough,
+it keeps on learning intill the very last epoch, the 8(L=4) layers network is very deep and hard to optimize
+over and therefor takes more time to start overfitting compared to the 6(L=3) layers one.
+This architecture of less features in the begining and more features in the last layers out preforms the
+homogeneous one in the previous experiment, reaching 78% accuracy in the best one on the test set.
 """
 
 part5_q4 = r"""
 **Your answer:**
+Almost on all datasets we saw that the shorter the network the better it preforms. (to put it in context - 
+the shalowest networks we trained here are about the same length as the deepest trainable networks in previous experiments)
+This has an exception on the test set in the second experiment where the 12 layers out preformed the 6 layers.
+So it seems there is a sweet spot at around 8 - 12 layers deep for this classification over cifar-10.
 
+comparison to experiment 1.1:
+The first experment is very much comparable to the first run group of this experiment - fixed K, L varied.
+We can see that using batch norm and skip cnnections we are able to train 16 and even 32 deep networks. 
+We can also see that 8-deep 32-wide network outpreforms by 6% on the test set, when comparing the resnet to 
+the cnn architectures.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+comparison to experiment 1.3:
+In the third experment we saw that the deeper the network is - the better it preformes. Here, we can see
+the mirror image of this trend, after 12 layers deep the network starts fall in prformance. 
+Also we can see that the models here reach about 2% higher accuracy. Finally we can say that using 3 
+different channels amounts has not significantly improved preformance. This is in contrast to the huge
+preformance improvement from homogeneous channel amount to 2 phased channel amount.
 """
+
+part5_q5 = r""
 
 
 # ==============
