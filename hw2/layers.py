@@ -498,10 +498,12 @@ class MLP(Layer):
         ActivationClass = ReLU if activation == "relu" else Sigmoid
         
         for in_size, out_size in weights_dims:
-            layers.append(Linear(in_size, out_size))
+            layers.append(Linear(in_size, out_size, **kw))
+            if dropout > 0:
+                layers.append(Dropout(dropout))
             layers.append(ActivationClass())
             
-        layers.append(Linear(hidden_features[-1], num_classes))
+        layers.append(Linear(hidden_features[-1], num_classes, **kw))
         # ========================
 
         self.sequence = Sequential(*layers)

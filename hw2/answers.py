@@ -75,10 +75,10 @@ def part2_optim_hp():
     # You may want to use different learning rates for each optimizer.
     # ====== YOUR CODE: ======
     wstd = 1
-    lr_vanilla = 0.0000002
+    lr_vanilla = 0.000215
     lr_momentum = 0.0001
     lr_rmsprop = 0.00001
-    reg = 0.000002
+    reg = 0.0000215
     # ========================
     return dict(
         wstd=wstd,
@@ -98,7 +98,7 @@ def part2_dropout_hp():
     # dropout.
     # ====== YOUR CODE: ======
     wstd = 0.1
-    lt = 0.001
+    lr = 0.001
     # ========================
     return dict(wstd=wstd, lr=lr)
 
