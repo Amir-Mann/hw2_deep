@@ -135,7 +135,7 @@ part2_q3 = r"""
    GD makes very calculated and slow moves down the loss surface as deffined over the dataset.
    SGD makes quicker to calculate moves down an aproximation of the loss surfaces of a different example (or mini batch) each time.
 
-3. Becuase SGD is so much faster at preforming each step, it will converge in much shorter time
+3. Becuase SGD is so much faster at performing each step, it will converge in much shorter time
    allthough in more steps. SGD also performs a ort of regularization, by fitting the model only
    to a small subset of the dataset instead of the whole thing. Often it is not possible to fit the entire
    dataset into memory, in those cases running GD is not feasible and SGD solves that problem.
@@ -323,7 +323,7 @@ part4_q1 = r"""
 part5_q1 = r"""
 **Your answer:**
 1. The depths has a varied effect on accuracy in this settings. While deeper models are more expressive
-   and complex, they are also harder to train. We can see that in our case the depth=4 model preformed
+   and complex, they are also harder to train. We can see that in our case the depth=4 model performed
    the best, while the second place was different depending on the width. However, we generally found that the
    depth=8 model didn't cause early stopping - because the optimization is a very hard task.
    We think that for that reason depth of 4 is a good compromise.
@@ -367,7 +367,7 @@ part5_q4 = r"""
 **Your answer:**
 Almost on all datasets we saw that the shorter the network the better it performs. (to put it in context - 
 the shalowest networks we trained here are about the same length as the deepest trainable networks in previous experiments)
-This has an exception on the test set in the second experiment where the 12 layers out preformed the 6 layers.
+This has an exception on the test set in the second experiment where the 12 layers out performed the 6 layers.
 So it seems there is a sweet spot at around 8 - 12 layers deep for this classification over cifar-10.
 
 comparison to experiment 1.1:
@@ -395,21 +395,21 @@ part5_q5 = r""
 
 part6_q1 = r"""
 **Your answer:**
-1. The model preformed quite bad: it has big misclasifies in both images.
+1. The model performed quite bad: it has big misclassified in both images.
    In the first one the bounding boxes are pretty well but it classifies three dolphines as two persons
    and a surfboard. In the second one the bounding boxes are not well aligned for the correctly classified
-   dog. A cat in the picture is not detected as a seperate object, but the clasification
-   of two dogs who are next to the cat are labeled "cat" falsly.
+   dog. A cat in the picture is not detected as a seperate object, but the classification
+   of two dogs who are next to the cat are labeled "cat" falsely.
 
-2. The model seems to fail because of very dark silhouettes, abscuring the detail of the dolphines, and
-   because of heavy relyence on contex for inferring. Also the model fails becuase there are a banch of
-   objects to the detect overlapping eachother.
+2. The model seems to fail because of very dark silhouettes, abscuring the detail of the dolphins, and
+   because of heavy relyence on context for inferring. Also the model fails becuase there are a banch of
+   objects to detect that are overlapping each other.
    To improve that, we might try brightining very dark spots in images, bluring the background of the image,
-   we can try and run the model on smaller segments of the clottered image.
+   we can try and run the model on smaller segments of the cluttered image.
    We may try to train the model with less context - filters bluring backgrounds maybe.
    Try and train the model with a heavy loss for detecting the wrong amount of bounding boxes in the image.
-   Using attenion to find the areas most importent for the classifcation and making smaller bounding boxes
-   around them / making sure each area is only effacting 1 boxes label. Giving stronger weight at the center
+   Using attenion to find the areas most important for the classifcation and making smaller bounding boxes
+   around them / making sure each area is only effecting 1 box's label. Giving stronger weight at the center
    of each bounding box after decision boundries where choosen and reclassifing. Maybe sending each cropped
    bounding box into a new different classifier.
    
@@ -424,18 +424,18 @@ part6_q2 = r"""
 
 part6_q3 = r"""
 **Your answer:**
-First Image - Toothbrushes: The model missclassfies the pens and other writing tools as all toothbrushes.
-This could be explained by clutterdeness - alot of vering objects in the same space over lapping each other.
-In addition the model might not know and wasn't trained on some of the objects like the rooler.
+First Image - Toothbrushes: The model misclassfies the pens and other writing tools as all toothbrushes.
+This could be explained by Clutter density - alot of varing objects in the same space overlapping each other.
+In addition the model might not know and wasn't trained on some of the objects like the ruler.
 
-Second image - Apples: The model missclassifies a robber duck as two appels.
+Second image - Apples: The model misclassifies a robber duck as two apples.
 This could be explained by model bias - when it sees red and yellow object surrounded by leaves it guess its
 an apple, because probably all the examples in his train dataset of red objects between leaves where appels.
 
 Third image - A mouse, a dog and a bear: The model misclassifies all the objects in the image, a coin and
-two toy (lamas), probably because it is not familiar with these objects, how ever maybe the cropped coin
-is misslabeled due to occlusion.
-The biggest mistake the model makes here is giving the half lama two misslabels in about the same bounding
+two toy (lamas), probably because it is not familiar with these objects. However, maybe the cropped coin
+is mislabeled due to occlusion.
+The biggest mistake the model makes here is giving the half lama two mislabels in about the same bounding
 box, calling it a dog and a bear intertwined. This is most likly due to occlusion, making the recognition
 of the object very hard for it.
 """
