@@ -136,7 +136,7 @@ part2_q3 = r"""
    SGD makes quicker to calculate moves down an aproximation of the loss surfaces of a different example (or mini batch) each time.
 
 3. Becuase SGD is so much faster at preforming each step, it will converge in much shorter time
-   allthough in more steps. SGD also preforms a ort of regularization, by fitting the model only
+   allthough in more steps. SGD also performs a ort of regularization, by fitting the model only
    to a small subset of the dataset instead of the whole thing. Often it is not possible to fit the entire
    dataset into memory, in those cases running GD is not feasible and SGD solves that problem.
    
@@ -206,9 +206,9 @@ def part3_optim_hp():
 part3_q1 = r"""
 **Your answer:**
 1. The model is qualitativly close to the optimal on our defined learning objective. We can see that the learing
-   is at a plateau on the last few epochs meaning we got into a local minimum, and from our expirmentaions with hp
-   we found that the best preformance on this data set wasn't much higher.
-   All this to say that the model is infact fairly close to the overall best model giving our optimization goals
+   is at a plateau on the last few epochs meaning we got into a local minimum, and from our experimentations with 
+   different hp we found that the best performance on this data set wasn't much higher.
+   All this to say that the model is, in fact, fairly close to the overall best model giving our optimization goals,
    which means the optimization error isn't very high.
 
 2. During the learning process, the training set shows consistent improvement, whereas the test set 
@@ -219,57 +219,58 @@ part3_q1 = r"""
    test and training sets, showing that the generalization error is not significant.
    
 3. From our knowledge of the distribution, it can be well approximated by an mlp model of our chosen hidden dims.
-   This is because the distribution is nearly seperable by a simple curve. more over, MLPs are highly expressive
-   as we saw in the tutorials. Therefor, we can say that the approximation error in not significant.  
+   This is because the distribution is nearly seperable by a simple curve. moreover, MLPs are highly expressive
+   as we saw in the tutorials. Therefore, we can say that the approximation error in not significant.  
 
 """
 
 part3_q2 = r"""
 **Your answer:**
 We would have expected the confusion matrix to be well balanced (FPR close to FNR) because
-the shift from the train ds to the validation ds is symetrical around the origin and the same
+the shift from the train ds to the validation ds is symetrical around the origin, and the same
 amount of False Positives would be added as of False Negatives.
 """
 
 part3_q3 = r"""
 **Your answer:**
-In both cases knowledge of the problem and "cost" of mistakes changes the threshold we choose.
-1. In the first scenario, FP are expansive to send into farther examinations, while FN are quit
+In both cases knowledge of the problem and "cost" of mistakes would have influenced the threshold we choose.
+1. In the first scenario, FP are expansive to send into farther examinations, while FN are quite
     allright because the person isn't in serious danger. For this case we would choose higher 
     threshold to classify more FN and less FP.
 2. In the second scenario, FN are really costly as they would cost someones life. So for this case
-    we would rather get more FP over FN. So we would set a lower threshold to classfy more FP then FN.
-In both cases, setting a reasonable threshold (not 0 or 1) is still important, otherwise the model 
-is usless, and there is a need to find a good compromise taking into acount the adjusted "costs".
+   we would rather get more FP than FN. So we would set a lower threshold to classfy more FP then FN.
+   
+   In both cases, setting a reasonable threshold (not 0 or 1) is important, otherwise the model 
+   is usless. It is essential to find a suitable compromise taking into account the adjusted "costs".
 """
 
 
 part3_q4 = r"""
 **Your answer:**
-General note/ananlysis: We run the expiraments a few times with diffrenet HP, and found the TANH nonlin preforms very well,
-we think because of that maybe some of the subtle diffrences between different architectors might have been lost.
+General note/ananlysis: We run the expiraments a few times with diffrenet HP, and found the TANH nonlin performs very well,
+we think because of that maybe some of the subtle differences between different architectors might have been lost.
 
 1. Increasing the width of the model seems to make it more expressive, which sometimes can cause over fitting: for deeper
-   models the wider netoworks altough with more detailed decision boundries have lower test accuracies. for more shallow
-   models the expresive power increase helps with test set preformance. Increasing the width makes for more specialized
-   decision boundries but not allways better accuracies.
+   models the wider networks, altough with more detailed decision boundries have lower test accuracies. for more shallow
+   models, the expresive power increase helps with test set performance. Increasing the width makes for more specialized
+   decision boundries but not always better accuracies.
 
-2. We can see that deeper models also have higher exprasive power, and again we can see that on nearo networks the
-   test set accuracies improve with depth, however on wider MPLs making them deepr causes overfitting, making for worst
+2. We can see that deeper models also have higher expressive power, and again we can see that on narrow networks the
+   test set accuracies improve with depth. However, on wider MPLs, making them deepr causes overfitting, making for worse
    test/validation accuracies.
-   In summary, increasing the depth makes for more specialized decision boundries but not allways better accuracies.
+   In summary, increasing the depth makes for more specialized decision boundries but not always better accuracies.
 
-3. Both the 1 deep 32 width and 4 deep 8 width seem to yeild close decision boundries, and similar result on the test set,
-   however on the validation set the deeper model preforms 5% worst. We think that because of the tanH non line which alows
-   for easy exprasion of the cruve of the dataset with only one hidden layer, making the wide network more efficient slightly.
+3. Both the 1 deep 32 width and 4 deep 8 width seem to yeild close decision boundries, and similar result on the test set.
+   However, on the validation set the deeper model performs 5% worse. We think that because of the tanH non line which allows
+   for easy expression of the curve of the dataset with only one hidden layer, making the wide network slightly more efficient.
 
 4. Generally there is not a single trend in the relation of the validation accuracy (before threshold selection) to the test
-   accuract (after threshold selection), sometimes the validation is better than the test and sometimes it's the other way
-   around, alltough in most cases there is an improvment (better threshold for genralization actully helps somewhat).
-   An intersting trend we did find was that threshold selction had a stablizing effect on the test accuracy:
-   While the validation accuracy veries drasticly (~20% diffrence) between our model the test accuracy varies less
-   even with very different archtectures (only ~8%). We think this improvment/stablization is because by choosing the threshold on the
-   validation we can correct some baises in the training set by moving slightly the boundries for better genralization.
+   accuracy (after threshold selection), sometimes the validation is better than the test and sometimes it's the other way
+   around. Alltough in most cases there is an improvement (better threshold for genralization actully helps somewhat).
+   An intersting trend we did find was that threshold selection had a stabilizing effect on the test accuracy:
+   While the validation accuracy varies drastically (~20% diffrence) between our models, the test accuracy shows less variation
+   even with very different archtectures (only ~8%). We think this improvement/stabilization is because by choosing the threshold on the
+   validation we can correct some biases in the training set by moving slightly the boundries for better genralization.
 """
 # ==============
 # Part 4 (CNN) answers
@@ -297,20 +298,19 @@ def part4_optim_hp():
 
 part4_q1 = r"""
 **Your answer:**
-1. As we saw in the tutorials the formula for number of paramters are: $K \cdot (C_{in}F^2 + 1)$
-   $parameter count for normal residual block = 2 * 256 (256 \cdot 3^2 + 1) = 1180160$
-   $parameter count for bottelneck = 64 (256 \cdot 1 + 1) + 64 (64 \cdot 3^2 + 1) + 256 (64 \cdot 1 + 1) = 70016$
-
-2. We can get a good estimation to the number of flops as $W \cdot H \cdot N \cdot Parameters_in_conv_layears$.
+1. As we saw in the tutorials the formula for number of paramters are: $K \cdot (C_{in}F^2 + 1)$. 
+   Parameter count for normal residual block =$ 2 * 256 (256 \cdot 3^2 + 1) = 1180160$. 
+   Parameter count for bottelneck =$ 64 (256 \cdot 1 + 1) + 64 (64 \cdot 3^2 + 1) + 256 (64 \cdot 1 + 1) = 70016$
+2. We can get a good estimation to the number of flops as $W \cdot H \cdot N \cdot $Parameters_in _conv _layears.
    This is because for each sample, height, and width, there would be around 1 multiplication with each parameter
-   in the layers to calculate the output. This means as per our last answer that the bottelneck block would require
+   in the layers to calculate the output. This means, Based on our previous answer, that the bottelneck block would require
    around $70,000 \cdot N \cdot H \cdot W$ flops while the normal resblock around $1,180,000 \cdot N \cdot H \cdot W$ flops. N representing num of samples,
    W is the image Width and H is the image Height (which are constant throughout the resblocks).
 
-3. (1) The bottle neck is worse at combining input spatially since the respetive view of each pixle is only 3x3, compared to
-   5x5 recptive field in the regular resblock. (2) The bottle neck can have input featuremaps  effecting across all output feature 
-   maps at each conv layer, because of the nature of the convolution operation itself, matching the exprassive ness of normal resblock.
-   Overall the bottleneck block in the diagram is less exprasive also because it has only 1 actual convolution with spatial information
+3. (1) The bottle neck is worse at combining input spatially since the receptive view of each pixle is only 3x3, compared to
+   5x5 recptive field in the regular resblock. (2) The bottleneck can have input featuremaps effecting across all output feature 
+   maps at each conv layer, because of the nature of the convolution operation itself, matching the expressiveness of normal resblock.
+   Overall the bottleneck block in the diagram is less expressive, also because it has only 1 actual convolution with spatial information
    and because each of the 256 output channels is a linear combination of only 64 convalution results.
 """
 
@@ -322,30 +322,30 @@ part4_q1 = r"""
 
 part5_q1 = r"""
 **Your answer:**
-1. The depths has a varied affect on accuracy in this settings, while deeper model are more expressive
+1. The depths has a varied effect on accuracy in this settings. While deeper models are more expressive
    and complex, they are also harder to train. We can see that in our case the depth=4 model preformed
-   the best, while the second place was different in depening on the width, but generaly we saw that the
+   the best, while the second place was different depending on the width. However, we generally found that the
    depth=8 model didn't cause early stopping - because the optimization is a very hard task.
-   We think that for that reason 4 is a good comprimaize for depth.
+   We think that for that reason depth of 4 is a good compromise.
 
 2. Yes, the networks of depth=16 were not trainable. This is due to the exploding/vanishing gradient
-   phenomenas, after 16 gradients the loss function has very unpredictable effect on the first weight
-   making the task of learning them imposible. We might resolve this problem at least partialy by:
-   a. Adding skip conections between every few conv layers, (resblocks) this would cause the loss derivative
+   phenomena, after 16 gradients the loss function has very unpredictable effect on the first weight
+   making the task of learning them imposible. We might resolve this problem at least partially by:
+   a. Adding skip conections between every few conv layers (resblocks). This would cause the loss derivative
       to directly effect the first layers of the network.
-   b. Adding Batch Normalization layers in the network can lower the covarient shift, and thus lessening
+   b. Adding Batch Normalization layers in the network can lower the covariate shift, and thus mitigating
       the problem with unscaled multiplicative gradients at the first layers of the network.
 """
 
 part5_q2 = r"""
 **Your answer:**
 We can see a few interesting trends in the second experiment. First of all we can see that the wider the
-network is the better interms of preformance both on test and train datasets and at any depth. This is
-very different to the mixed results in the first experiment regarding depth. Secondly we can see that
-wider netoworks tend to train in less epochs and reach early stopping faster. We are not certain that 
+network is the better, in terms of performance both on test and train datasets and at any depth. This is
+very different from the mixed results in the first experiment regarding depth. Secondly we can see that
+wider networks tend to train in less epochs and reach early stopping faster. We are not certain that 
 this means actuall faster training phase, because each apoch requires more calculations due to around
 quedratic amount of parameters and flops.
-Lastly, we can see that the 128-wide networks which where only trained in this experiment out preform the
+Lastly, we can see that the 128-wide networks which where only trained in this experiment outperform the
 networks of the first experiment, reaching 75% accuracy on test set. Around 3-5% more then the best ones
 there.
 """
@@ -353,35 +353,35 @@ there.
 part5_q3 = r"""
 **Your answer:**
 In this experiment we can see that the deeper the network (up to the given bound of 8 layer) is the better
-it preforms on the test set, while all the network can achive overfitting and are early stopped to prevent
+it performs on the test set, while all the network can achive overfitting and are early stopped to prevent
 this.
-We can see a werid phenomana is that the network with 6(L=3) layers is trained the fastest, and there is not a
+a wierd phenomena we noticed would be the network with 6(L=3) layers is trained the fastest, and there is not a
 single trend correltion. We think this is because while the 4(L=2) layers network is not expressive enough,
-it keeps on learning intill the very last epoch, the 8(L=4) layers network is very deep and hard to optimize
+it keeps on learning untill the very last epoch, the 8(L=4) layers network is very deep and hard to optimize
 over and therefor takes more time to start overfitting compared to the 6(L=3) layers one.
-This architecture of less features in the begining and more features in the last layers out preforms the
+This architecture of less features in the begining and more features in the last layers outperforms the
 homogeneous one in the previous experiment, reaching 78% accuracy in the best one on the test set.
 """
 
 part5_q4 = r"""
 **Your answer:**
-Almost on all datasets we saw that the shorter the network the better it preforms. (to put it in context - 
+Almost on all datasets we saw that the shorter the network the better it performs. (to put it in context - 
 the shalowest networks we trained here are about the same length as the deepest trainable networks in previous experiments)
 This has an exception on the test set in the second experiment where the 12 layers out preformed the 6 layers.
 So it seems there is a sweet spot at around 8 - 12 layers deep for this classification over cifar-10.
 
 comparison to experiment 1.1:
-The first experment is very much comparable to the first run group of this experiment - fixed K, L varied.
-We can see that using batch norm and skip cnnections we are able to train 16 and even 32 deep networks. 
-We can also see that 8-deep 32-wide network outpreforms by 6% on the test set, when comparing the resnet to 
+The first experiment is very much comparable to the first run group of this experiment - fixed K, L varied.
+We can see that in using batch norm and skip connections we are able to train 16 and even 32 deep networks. 
+We can also see that 8-deep 32-wide network outperforms by 6% on the test set, when comparing the resnet to 
 the cnn architectures.
 
 comparison to experiment 1.3:
-In the third experment we saw that the deeper the network is - the better it preformes. Here, we can see
+In the third experiment we saw that the deeper the network is - the better it performs. Here, we can see
 the mirror image of this trend, after 12 layers deep the network starts fall in prformance. 
 Also we can see that the models here reach about 2% higher accuracy. Finally we can say that using 3 
-different channels amounts has not significantly improved preformance. This is in contrast to the huge
-preformance improvement from homogeneous channel amount to 2 phased channel amount.
+different channels amounts has not significantly improved performance. This is in contrast to the huge
+performance improvement from homogeneous channel amount to 2 phased channel amount.
 """
 
 part5_q5 = r""
