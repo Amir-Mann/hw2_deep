@@ -395,54 +395,52 @@ part5_q5 = r""
 
 part6_q1 = r"""
 **Your answer:**
+1. The model preformed quite bad: it has big misclasifies in both images.
+   In the first one the bounding boxes are pretty well but it classifies three dolphines as two persons
+   and a surfboard. In the second one the bounding boxes are not well aligned for the correctly classified
+   dog. A cat in the picture is not detected as a seperate object, but the clasification
+   of two dogs who are next to the cat are labeled "cat" falsly.
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+2. The model seems to fail because of very dark silhouettes, abscuring the detail of the dolphines, and
+   because of heavy relyence on contex for inferring. Also the model fails becuase there are a banch of
+   objects to the detect overlapping eachother.
+   To improve that, we might try brightining very dark spots in images, bluring the background of the image,
+   we can try and run the model on smaller segments of the clottered image.
+   We may try to train the model with less context - filters bluring backgrounds maybe.
+   Try and train the model with a heavy loss for detecting the wrong amount of bounding boxes in the image.
+   Using attenion to find the areas most importent for the classifcation and making smaller bounding boxes
+   around them / making sure each area is only effacting 1 boxes label. Giving stronger weight at the center
+   of each bounding box after decision boundries where choosen and reclassifing. Maybe sending each cropped
+   bounding box into a new different classifier.
+   
 """
 
 
 part6_q2 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
 """
 
 
 part6_q3 = r"""
 **Your answer:**
+First Image - Toothbrushes: The model missclassfies the pens and other writing tools as all toothbrushes.
+This could be explained by clutterdeness - alot of vering objects in the same space over lapping each other.
+In addition the model might not know and wasn't trained on some of the objects like the rooler.
 
+Second image - Apples: The model missclassifies a robber duck as two appels.
+This could be explained by model bias - when it sees red and yellow object surrounded by leaves it guess its
+an apple, because probably all the examples in his train dataset of red objects between leaves where appels.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+Third image - A mouse, a dog and a bear: The model misclassifies all the objects in the image, a coin and
+two toy (lamas), probably because it is not familiar with these objects, how ever maybe the cropped coin
+is misslabeled due to occlusion.
+The biggest mistake the model makes here is giving the half lama two misslabels in about the same bounding
+box, calling it a dog and a bear intertwined. This is most likly due to occlusion, making the recognition
+of the object very hard for it.
 """
 
 part6_bonus = r"""
 **Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+Not done (yet?)
 """
