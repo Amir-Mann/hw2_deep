@@ -98,7 +98,24 @@ def part2_dropout_hp():
 
 part2_q1 = r"""
 **Your answer:**
-
+1. The graphs in some sense are what we expected some surprized us.
+   We expected the dropout regularization to drasticly improve the test accuracy and lower
+   it's losses, while doing the oppsite, but only slightly on the training set.
+   We can see that indeed while the test set losses rise constantly without the dropout, the losses
+   on the train set with the dropout converege better (altough to around 2, which is fairy bad).
+   It also appears from the graphs that the regularzation greatly harms (even more than we'd expect)
+   the ability of the model to learn the training set, reaching only 50% accuracy with 0.4 regularization
+   and only 30% with 0.8.
+   Lasly, we can see that there is no real improvement in the test accuracy, all are converging on around 25% which we didn't expect.
+   This code be caused by bad optimizer / opt hyperparameters, by bad initial conditions or even by bad parameters to samples ratio,
+   which the dropout regularization tried to improve on the genralization of this ratio - not allowing each parameter / node to
+   represent a different singular sample.
+   In order to see a better convergence and solve the problems stated above there might be a few things to try.
+   a. Different learning rate / learning algorithems - Maybe using adam would converge faster and to higher test accuracies with dropout.
+   b. Different initial conditions - playing around with wstd more, altough we didn't find any values that worked better.
+   c. Different models with more / less parameters - We think since the 0.4 reg still overfits maybe reduce the parameters count in this settings
+                                                     and increase the parameters count for the 0.8 which underfitts.
+   
 """
 
 part2_q2 = r"""
@@ -134,20 +151,69 @@ part2_q3 = r"""
    to a small subset of the dataset instead of the whole thing. Often it is not possible to fit the entire
    dataset into memory, in those cases running GD is not feasible and SGD solves that problem.
    
-4. AODIFSUASOD*UV*ADSUVOADSUVOICXUVO*AUVO(AUEW)
+4. 1. This approch would not produce gradient equivalent to GD, although it might be a scalar multiplication of this grad.
+      If the batches are all exactly the same size and, we denote the batch size as B and num samples as m and assume m % B = 0
+      then the summed loss is:
+      
+      $L' = \Sigma_{b=0}^{\frac{m}{B}-1} L_b = \Sigma_{b=0}^{\frac{m}{B}-1} \frac{1}{B} \Sigma_{i=0}^{B-1} L(x_{b+i})$
+      $ =  \frac{m}{B} \cdot \frac{1}{m} \Sigma_{i=0}^{m-1} L(x_{i}) = \frac{m}{B} L$
+      
+      This would cause the gradient to be scaled by the same factor. If we however don't use same batch sizes or batches that
+      perfectly divide the data we will get different results which are not an exact multiple of L.
+   
+   2. For automatic differentiasion each loss keeps (or the layers themselfes) a computational graph of how was this loss generated
+      in order for the backwards algorithm to work, this means that effectively, spliting into batches did not save us from loading
+      all the data to memory, generating the error when a large enough amount of losses (and their origins) are stored in memory 
+      at once.
 """
 
 part2_q4 = r"""
 **Your answer:**
+1. A. In order to reduce memory complexity using forward mode to compute the gradient we can propagate the multiplication
+      of the gradiet at the same time as calculating the outputs of the function each step (the same pass).
+      Only forwarding two scalars for each step $F_j, D_j$ and not commiting any knowledge to long term memory and using a loop
+      instead of recursion. In pseudo code:
+      
+      $D \leftarrow 1$
+      
+      $F \leftarrow x_0$
+      
+      for $j=1$ to $n$:
+      
+        $   D \leftarrow D \cdot f_j.derivative(F)$
+        // this is $D_j = D_{j-1} \cdot f_j.derivative(F_{j-1}(x_0))$
+      
+        $   F \leftarrow f_n()$ 
+        // this is $F_j = f_j(F_{j-1}(x_0))$
+      
+      The memory complexity reduced to O(1).
+      Note: in the next section we assume we are after the forward pass and the computetinal graph is filled, this would save
+      calclulating F at each step - we could just take it from the graph.
+   B. In order to reduce memory complexity using backwards mode to compute the gradient we can compute a multiplicative sum of the grads
+      as we propagate backwards, without commiting the gradients into memory, only passing one scalar for each step D_j and using a loop
+      instead of recursion. In pseudo code:
+      
+      $D \leftarrow 1$
+      
+      for $j=n$ to $1$:
+      
+      $D \leftarrow D \cdot v_j.fn.derivative(v_{j-1}.val)$ 
+      // this is $D_j = D_{j+1} \cdot f_j.derivative(F_{j-1}(x_0)) $
+      
+      The memory complexity reduced to O(1).
+
+2. To some extent these techniques  might improve the memory usage (by saving only gradients which are still required for some calculation) but
+   the complexity however will not be improved. And example of that is when there are n-1 nodes which all contribute to the gradient of the
+   last node. No matter how we set it up, for the last node calculation we would be require to have the gradients of all n-1 other
+   nodes in memory.
+   This means that for an arbitrary computational graphs the memory complexity for calculation the gradients is $\Theta(n)$
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+3. When there is a very deep network it usually has very repetitive and narrow sections, propagating the gradients through them using
+   only the relevent gradients at each step might save alot of memory.
+   The most important take away than would be to not keep the final derivatives of all ajustable weights in the network, and
+   tossing after use most gradient which would no longer be used like activation function, summation nodes, dropouts etc.
+      
 """
 
 # ==============
@@ -410,10 +476,7 @@ part6_q1 = r"""
 """
 
 
-part6_q2 = r"""
-**Your answer:**
-
-"""
+part6_q2 = r""""""
 
 
 part6_q3 = r"""
@@ -436,5 +499,17 @@ of the object very hard for it.
 
 part6_bonus = r"""
 **Your answer:**
-Not done (yet?)
+1. Bluring the backgroud
+   in such cases like dolphins image we have been provided, or the image of the robber duck we took, we suspect that the 
+   the model misclassified the objects because of model bias (means, like we have described before, that the model train on
+   dataset which most of the photos of red object in the center of green leaves were apples, and objects above the water were peoples
+   and surfboards). so we think that bluring the backgroung of the image will make the model not paying attention to the 
+   surrounding of the object, allowing it to classify better.
+2. Gamma reduction
+   we decreased the brightness by half anywhere outside the boundary boxes, and doubles it inside. This is in order to reduce 
+   problems of misclassification when the object is the dakest part in the image (like in the dolphin image).
+3. Bluring edged of boundary boxes
+   We blured and darkened 5% into the boundary boxes, in order to reduce the effect of objects not centered in the middle of the 
+   box on the classification of the object in the box. This might help in cluttered images like the images of the dogs and the cat, and the 
+   image of the writing tools.
 """
