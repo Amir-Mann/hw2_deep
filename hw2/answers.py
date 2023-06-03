@@ -12,38 +12,31 @@ part1_q1 = r"""
 **Your answer:**
 
 
-1.a. The shape of the jacobian is '(N = 64, if_features = 1024, N = 64, out_features = 512)' 
+1.a. The shape of the jacobian is '(N = 64, in_features = 1024, N = 64, out_features = 512)' 
 
-1.b. yes, this matrix is sparse. because $\forall j\neq i:\frac{\partial y_i}{\partial x_j} = 0$, 
+1.b. Yes, this matrix is sparse. because $\forall j\neq i:\frac{\partial y_i}{\partial x_j} = 0$, 
      and this is because we treat each sample independently from the rest of the batch.
      
-1.c. There is no need to materialize the jacobian,  we can calculate $\frac{\partial L}{\partial X}$
+1.c. There is no need to materialize the jacobian, we can calculate $\frac{\partial L}{\partial X}$
      by performing matrix multiplication: $\frac{\partial L}{\partial Y} \times W$ 
      
 2.a. The shape of the jacobian is '(N = 64, out_features = 512, out_features = 512, in_features = 1024)'
 
-2.b. yes, this matrix is sparse. because $\forall k\neq j:\frac{\partial Y_{(i, j)}}{\partial W_{(k, y)}} = 0$, 
-     and this is because each neuron is only effected by hhis owm weights.
+2.b. Yes, this matrix is sparse. because $\forall k\neq j:\frac{\partial Y_{(i, j)}}{\partial W_{(k, y)}} = 0$, 
+     and this is because each neuron is only effected by his owm weights.
      
 2.c. There is no need to materialize the jacobian,  we can calculate $\frac{\partial L}{\partial Y}$
      by performing matrix multiplication: $\frac{\partial L}{\partial Y}^T \times X$ 
-
-
-
-
 """
 
 part1_q2 = r"""
 **Your answer:**
 
-
 Yes we can! we can train a neural network without back propagation. we can expand the expression of the loss as a function of each o our
 parameters, deriviate it analiticly by hand and so find the gradient with respept to each parameter. 
 
 However, this approach is very hard to implement. And would require redoing the calculations every time we change the networking.
-Making nerual networks withour backprop not very feasible.
- 
-
+Making nerual networks without backprop not very feasible.
 """
 
 
@@ -114,7 +107,7 @@ part2_q2 = r"""
 Yes, while training with cross entropy loss it is possible for the loss to increase for a few epochs
 while the test accuracy also icreases.
 
-And a example of when might this happen is when there is a spesific difficult or misslabled sample in the
+And an example of when might this happen is when there is a spesific difficult or misslabled sample in the
 test dataset, which the model predicts to be of the worng class with rising confidency, while also
 improving on most other sample predictions.
 This will cause the loss to expload (because cross entropy heavly punished confident wrong prediction)
@@ -127,20 +120,21 @@ part2_q3 = r"""
 
 1. Back propagation is a method for calculating derivatives of loss with respect to different parameters
    in a deep network and isn't an optimization method. GD is an optimization method that uses the derivative
-   with regard to each parameter reach a minmum of a given loss function, and isn't a
+   with regard to each parameter in order to reach a minmum of a given loss function, and isn't a
    method for calculating derivatives.
 
 2. GD calculets the gradient over the entire dataset and updates the parameters only once.
-   SGD calculets the gradient over a single sample (or a mini batch in mini-batch SGD) and updates the parametrs only once.
-   GD makes very calculated and slow moves down the loss surface as deffined over the dataset.
-   SGD makes quicker to calculate moves down an aproximation of the loss surfaces of a different example (or mini batch) each time.
+   SGD calculets the gradient over each sample (or a mini batch in mini-batch SGD) and updates the parametrs every time.
+   GD makes very calculated and slow steps down the loss surface as deffined over the dataset.
+   SGD makes quicker to calculate steps down an aproximation of the loss surfaces, 
+   using the loss of over a single, different sample (or mini batch) each time.
 
 3. Becuase SGD is so much faster at preforming each step, it will converge in much shorter time
-   allthough in more steps. SGD also preforms a ort of regularization, by fitting the model only
+   allthough in more steps. SGD also preforms a sort of regularization, by fitting the model only
    to a small subset of the dataset instead of the whole thing. Often it is not possible to fit the entire
    dataset into memory, in those cases running GD is not feasible and SGD solves that problem.
    
-4. 
+4. AODIFSUASOD*UV*ADSUVOADSUVOICXUVO*AUVO(AUEW)
 """
 
 part2_q4 = r"""
@@ -219,8 +213,8 @@ part3_q1 = r"""
    test and training sets, showing that the generalization error is not significant.
    
 3. From our knowledge of the distribution, it can be well approximated by an mlp model of our chosen hidden dims.
-   This is because the distribution is nearly seperable by a simple curve. more over, MLPs are highly expressive
-   as we saw in the tutorials. Therefor, we can say that the approximation error in not significant.  
+   This is because the distribution is best seperated by a simple curve. more over, MLPs are highly expressive
+   as we saw in the tutorials. Therefor, we can say that the approximation error in not significant.
 
 """
 
