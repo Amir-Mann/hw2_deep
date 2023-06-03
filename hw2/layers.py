@@ -369,7 +369,7 @@ class Dropout(Layer):
         #  differently a according to the current training_mode (train/test).
         # ====== YOUR CODE: ======
         if(self.training_mode):
-            boby = torch.int(torch.rand_like(x) > self.p)
+            boby = torch.where(torch.rand_like(x) > self.p, 1.0, 0.0)
             out = torch.mul(x, boby)
         else:
             out = x * (1 - self.p)
@@ -382,7 +382,10 @@ class Dropout(Layer):
     def backward(self, dout):
         # TODO: Implement the dropout backward pass.
         # ====== YOUR CODE: ======
-        dx = torch.mul(dout, self.grad_cache["boby"])
+        if self.training_mode:
+            dx = torch.mul(dout, self.grad_cache["boby"])
+        else:
+            dx = dout * (1 - self.p)
         # ========================
 
         return dx
@@ -498,10 +501,12 @@ class MLP(Layer):
         ActivationClass = ReLU if activation == "relu" else Sigmoid
         
         for in_size, out_size in weights_dims:
-            layers.append(Linear(in_size, out_size))
+            layers.append(Linear(in_size, out_size, **kw))
             layers.append(ActivationClass())
+            if dropout > 0:
+                layers.append(Dropout(dropout))
             
-        layers.append(Linear(hidden_features[-1], num_classes))
+        layers.append(Linear(hidden_features[-1], num_classes, **kw))
         # ========================
 
         self.sequence = Sequential(*layers)

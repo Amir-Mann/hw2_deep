@@ -104,8 +104,9 @@ class MomentumSGD(Optimizer):
             # to include the regularization term.
             # ====== YOUR CODE: ======
             v = self.momentums_list[i]
-            v = self.momentum * v - self.learn_rate * dp
-            p += v
+            d = - self.learn_rate * (dp + self.reg * p)
+            v = self.momentum * v + d
+            p += d
             self.momentums_list[i] = v 
             # ========================
 
