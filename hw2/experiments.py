@@ -86,8 +86,8 @@ def cnn_experiment(
     epochs=100,
     early_stopping=3,
     checkpoints=None,
-    lr=0.1,
-    reg=0.001,
+    lr=0.0004,
+    reg=0.00006,
     # Model params
     filters_per_layer=[64],
     layers_per_block=2,

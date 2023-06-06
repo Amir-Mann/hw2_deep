@@ -12,13 +12,15 @@ part1_q1 = r"""
 **Your answer:**
 
 
-1.a. The shape of the jacobian is '(N = 64, in_features = 1024, N = 64, out_features = 512)' 
+1.a. The shape of the jacobian is '(N = 64, out_features = 512, N = 64, in_features = 1024)' 
 
 1.b. Yes, this matrix is sparse. because $\forall j\neq i:\frac{\partial y_i}{\partial x_j} = 0$, 
      and this is because we treat each sample independently from the rest of the batch.
      
 1.c. There is no need to materialize the jacobian, we can calculate $\frac{\partial L}{\partial X}$
-     by performing matrix multiplication: $\frac{\partial L}{\partial Y} \times W$ 
+     by performing matrix multiplication: $\frac{\partial L}{\partial Y} \times W$
+     
+     This is true because each row in X is linearly effecting a row in Y, each time by a column in W.
      
 2.a. The shape of the jacobian is '(N = 64, out_features = 512, out_features = 512, in_features = 1024)'
 
@@ -27,16 +29,22 @@ part1_q1 = r"""
      
 2.c. There is no need to materialize the jacobian,  we can calculate $\frac{\partial L}{\partial Y}$
      by performing matrix multiplication: $\frac{\partial L}{\partial Y}^T \times X$ 
+     
+     This is true because each column in W is linearly multiplied by each sample to create a each column in the output.
 """
 
 part1_q2 = r"""
 **Your answer:**
 
-Yes we can! we can train a neural network without back propagation. we can expand the expression of the loss as a function of each o our
-parameters, deriviate it analiticly by hand and so find the gradient with respept to each parameter. 
-
+Back-propagation is not required for training neural networks with decent-based optimization altough it is not practical not to use it.
+We can expand the expression of the loss as a function of each one of our parameters, deriviate it analiticly by hand and so find the
+gradient with respept to each parameter.
 However, this approach is very hard to implement. And would require redoing the calculations every time we change the networking.
 Making nerual networks without backprop not very feasible.
+
+We can also use forward mode to calculate gradients like explained in the tutorials, but since the result is a scalar loss, and there
+are many parameters in the network, this would require calculating the derivative with regards to each parameter, making the training
+alot heavier and the every medium size model not trainable.
 """
 
 
@@ -168,27 +176,28 @@ part2_q3 = r"""
 """
 
 part2_q4 = r"""
-**Your answer:**
+*Your answer:*
 1. A. In order to reduce memory complexity using forward mode to compute the gradient we can propagate the multiplication
       of the gradiet at the same time as calculating the outputs of the function each step (the same pass).
       Only forwarding two scalars for each step $F_j, D_j$ and not commiting any knowledge to long term memory and using a loop
       instead of recursion. In pseudo code:
       
-      $D \leftarrow 1$
+      $D \leftarrow 1$ 
       
       $F \leftarrow x_0$
       
       for $j=1$ to $n$:
       
-        $   D \leftarrow D \cdot f_j.derivative(F)$
-        // this is $D_j = D_{j-1} \cdot f_j.derivative(F_{j-1}(x_0))$
+      $D \leftarrow D \cdot f_j.derivative(F)$
+      // this is $D_j = D_{j-1} \cdot f_j.derivative(F_{j-1}(x_0))$
       
-        $   F \leftarrow f_n()$ 
-        // this is $F_j = f_j(F_{j-1}(x_0))$
+      $F \leftarrow f_n()$ 
+      // this is $F_j = f_j(F_{j-1}(x_0))$
       
       The memory complexity reduced to O(1).
       Note: in the next section we assume we are after the forward pass and the computetinal graph is filled, this would save
       calclulating F at each step - we could just take it from the graph.
+
    B. In order to reduce memory complexity using backwards mode to compute the gradient we can compute a multiplicative sum of the grads
       as we propagate backwards, without commiting the gradients into memory, only passing one scalar for each step D_j and using a loop
       instead of recursion. In pseudo code:
@@ -281,14 +290,18 @@ part3_q1 = r"""
 3. From our knowledge of the distribution, it can be well approximated by an mlp model of our chosen hidden dims.
    This is because the distribution is best seperated by a simple curve. moreover, MLPs are highly expressive
    as we saw in the tutorials. Therefore, we can say that the approximation error in not significant.
+   It can be staited that even a perfect sepratation of this data would still have miss classification since there are
+   orange points of data in dense blue regions and vice verca.
 
 """
 
 part3_q2 = r"""
 **Your answer:**
-We would have expected the confusion matrix to be well balanced (FPR close to FNR) because
-the shift from the train ds to the validation ds is symetrical around the origin, and the same
-amount of False Positives would be added as of False Negatives.
+We would have expected there to be more False Negatives since we can see from the data plots at the begining of the notebook
+that there are many orange points in a heavly blue regions.
+This points with true labels of 1 would be classified as 0 generating a false negative.
+
+This also matches our results in the confusion matrix.
 """
 
 part3_q3 = r"""
