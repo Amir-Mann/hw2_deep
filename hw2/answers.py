@@ -106,24 +106,41 @@ def part2_dropout_hp():
 
 part2_q1 = r"""
 **Your answer:**
-1. The graphs in some sense are what we expected some surprized us.
-   We expected the dropout regularization to drasticly improve the test accuracy and lower
-   it's losses, while doing the oppsite, but only slightly on the training set.
+
+1. The graphs are, in some sense, what we expected some surprized us.
+   We expected the dropout regularization to improve the test accuracy and lower
+   it's losses, while doing the opposite, but only slightly on the training set.
+   
    We can see that indeed while the test set losses rise constantly without the dropout, the losses
-   on the train set with the dropout converege better (altough to around 2, which is fairy bad).
+   on the train set with the dropout converege better even if only to around loss=2, which is fairy bad.
+   
    It also appears from the graphs that the regularzation greatly harms (even more than we'd expect)
    the ability of the model to learn the training set, reaching only 50% accuracy with 0.4 regularization
    and only 30% with 0.8.
-   Lasly, we can see that there is no real improvement in the test accuracy, all are converging on around 25% which we didn't expect.
-   This code be caused by bad optimizer / opt hyperparameters, by bad initial conditions or even by bad parameters to samples ratio,
+   
+   Lastly, we can see that there is no real improvement in the test accuracy, all runs are converging at around 25% which we didn't expect.
+   
+   This could be caused by bad optimizer / opt hyperparameters, by bad initial conditions or even by bad parameters to samples ratio,
    which the dropout regularization tried to improve on the genralization of this ratio - not allowing each parameter / node to
    represent a different singular sample.
    In order to see a better convergence and solve the problems stated above there might be a few things to try.
-   a. Different learning rate / learning algorithems - Maybe using adam would converge faster and to higher test accuracies with dropout.
-   b. Different initial conditions - playing around with wstd more, altough we didn't find any values that worked better.
-   c. Different models with more / less parameters - We think since the 0.4 reg still overfits maybe reduce the parameters count in this settings
-                                                     and increase the parameters count for the 0.8 which underfitts.
    
+   a. Different learning rate / learning algorithems - Maybe using adam would converge faster and to higher test accuracies with dropout.
+   
+   b. Different initial conditions - playing around with wstd more, altough we didn't find any values that worked better.
+   
+   c. Different models with more / less parameters - We think since the 0.4 reg still overfits maybe reduce the parameters
+      count in this settings and increase the parameters count for the 0.8 which underfitts.
+
+Compare the low-dropout setting to the high-dropout setting and explain based on your graphs.
+
+2. The high dropout setting is very drastic, aliminating most nodes at each forward pass, which makes the model
+   train only on an "average" of "afew" very minimal classifiers which makes for very low loss spread but also
+   low test and train accuracies.
+   
+   In contrast, the low dropout settings learns a more balanced model which is on one hand averaging and training only
+   some part of the model, but on the other hand, the part that is trained is still expressive in itself.
+   Because of that we can see that the test and train accuracies are better, even if the loss is more noisy.
 """
 
 part2_q2 = r"""
@@ -274,6 +291,7 @@ def part3_optim_hp():
 
 part3_q1 = r"""
 **Your answer:**
+
 1. The model is qualitativly close to the optimal on our defined learning objective. We can see that the learing
    is at a plateau on the last few epochs meaning we got into a local minimum, and from our experimentations with 
    different hp we found that the best performance on this data set wasn't much higher.
@@ -306,10 +324,12 @@ This also matches our results in the confusion matrix.
 
 part3_q3 = r"""
 **Your answer:**
+
 In both cases knowledge of the problem and "cost" of mistakes would have influenced the threshold we choose.
 1. In the first scenario, FP are expansive to send into farther examinations, while FN are quite
     allright because the person isn't in serious danger. For this case we would choose higher 
     threshold to classify more FN and less FP.
+
 2. In the second scenario, FN are really costly as they would cost someones life. So for this case
    we would rather get more FP than FN. So we would set a lower threshold to classfy more FP then FN.
    
@@ -320,6 +340,7 @@ In both cases knowledge of the problem and "cost" of mistakes would have influen
 
 part3_q4 = r"""
 **Your answer:**
+
 General note/ananlysis: We run the expiraments a few times with diffrenet HP, and found the TANH nonlin performs very well,
 we think because of that maybe some of the subtle differences between different architectors might have been lost.
 
@@ -371,9 +392,11 @@ def part4_optim_hp():
 
 part4_q1 = r"""
 **Your answer:**
+
 1. As we saw in the tutorials the formula for number of paramters are: $K \cdot (C_{in}F^2 + 1)$. 
    Parameter count for normal residual block =$ 2 * 256 (256 \cdot 3^2 + 1) = 1180160$. 
    Parameter count for bottelneck =$ 64 (256 \cdot 1 + 1) + 64 (64 \cdot 3^2 + 1) + 256 (64 \cdot 1 + 1) = 70016$
+
 2. We can get a good estimation to the number of flops as $W \cdot H \cdot N \cdot $Parameters_in _conv _layears.
    This is because for each sample, height, and width, there would be around 1 multiplication with each parameter
    in the layers to calculate the output. This means, Based on our previous answer, that the bottelneck block would require
@@ -395,6 +418,7 @@ part4_q1 = r"""
 
 part5_q1 = r"""
 **Your answer:**
+
 1. The depths has a varied effect on accuracy in this settings. While deeper models are more expressive
    and complex, they are also harder to train. We can see that in our case the depth=4 model performed
    the best, while the second place was different depending on the width. However, we generally found that the
@@ -404,20 +428,25 @@ part5_q1 = r"""
 2. Yes, the networks of depth=16 were not trainable. This is due to the exploding/vanishing gradient
    phenomena, after 16 gradients the loss function has very unpredictable effect on the first weight
    making the task of learning them imposible. We might resolve this problem at least partially by:
+
    a. Adding skip conections between every few conv layers (resblocks). This would cause the loss derivative
       to directly effect the first layers of the network.
+   
    b. Adding Batch Normalization layers in the network can lower the covariate shift, and thus mitigating
       the problem with unscaled multiplicative gradients at the first layers of the network.
 """
 
 part5_q2 = r"""
 **Your answer:**
+
 We can see a few interesting trends in the second experiment. First of all we can see that the wider the
 network is the better, in terms of performance both on test and train datasets and at any depth. This is
-very different from the mixed results in the first experiment regarding depth. Secondly we can see that
-wider networks tend to train in less epochs and reach early stopping faster. We are not certain that 
-this means actuall faster training phase, because each apoch requires more calculations due to around
-quedratic amount of parameters and flops.
+very different from the mixed results in the first experiment regarding depth.
+
+Secondly we can see that wider networks tend to train in less epochs and reach early stopping faster.
+We are not certain that this means actuall faster training phase,
+because each apoch requires more calculations due to around quedratic amount of parameters and flops.
+
 Lastly, we can see that the 128-wide networks which where only trained in this experiment outperform the
 networks of the first experiment, reaching 75% accuracy on test set. Around 3-5% more then the best ones
 there.
@@ -425,19 +454,23 @@ there.
 
 part5_q3 = r"""
 **Your answer:**
+
 In this experiment we can see that the deeper the network (up to the given bound of 8 layer) is the better
 it performs on the test set, while all the network can achive overfitting and are early stopped to prevent
 this.
-a wierd phenomena we noticed would be the network with 6(L=3) layers is trained the fastest, and there is not a
+
+A wierd phenomena we noticed would be the network with 6(L=3) layers is trained the fastest, and there is not a
 single trend correltion. We think this is because while the 4(L=2) layers network is not expressive enough,
 it keeps on learning untill the very last epoch, the 8(L=4) layers network is very deep and hard to optimize
 over and therefor takes more time to start overfitting compared to the 6(L=3) layers one.
+
 This architecture of less features in the begining and more features in the last layers outperforms the
 homogeneous one in the previous experiment, reaching 78% accuracy in the best one on the test set.
 """
 
 part5_q4 = r"""
 **Your answer:**
+
 Almost on all datasets we saw that the shorter the network the better it performs. (to put it in context - 
 the shalowest networks we trained here are about the same length as the deepest trainable networks in previous experiments)
 This has an exception on the test set in the second experiment where the 12 layers out performed the 6 layers.
@@ -467,7 +500,8 @@ part5_q5 = r""
 
 
 part6_q1 = r"""
-**Your answer:**
+*Your answer:*
+
 1. The model performed quite bad: it has big misclassified in both images.
    In the first one the bounding boxes are pretty well but it classifies three dolphines as two persons
    and a surfboard. In the second one the bounding boxes are not well aligned for the correctly classified
@@ -475,8 +509,10 @@ part6_q1 = r"""
    of two dogs who are next to the cat are labeled "cat" falsely.
 
 2. The model seems to fail because of very dark silhouettes, abscuring the detail of the dolphins, and
-   because of heavy relyence on context for inferring. Also the model fails becuase there are a banch of
-   objects to detect that are overlapping each other.
+   because of heavy relyence on context for inferring (the dataset in which the model trained on probably consists
+   images of people on surfboards in the sea, which encouraged the model to classify the dolphins as people / surfboards).
+   Also the model fails becuase there are a banch of objects to detect that are overlapping each other.
+   
    To improve that, we might try brightining very dark spots in images, bluring the background of the image,
    we can try and run the model on smaller segments of the cluttered image.
    We may try to train the model with less context - filters bluring backgrounds maybe.
@@ -488,12 +524,12 @@ part6_q1 = r"""
    
 """
 
-
 part6_q2 = r""""""
 
 
 part6_q3 = r"""
 **Your answer:**
+
 First Image - Toothbrushes: The model misclassfies the pens and other writing tools as all toothbrushes.
 This could be explained by Clutter density - alot of varing objects in the same space overlapping each other.
 In addition the model might not know and wasn't trained on some of the objects like the ruler.
@@ -512,15 +548,20 @@ of the object very hard for it.
 
 part6_bonus = r"""
 **Your answer:**
+
+We manipulated the images in 3 ways in attempt to achive better classification at each bounding box:
+
 1. Bluring the backgroud
    in such cases like dolphins image we have been provided, or the image of the robber duck we took, we suspect that the 
    the model misclassified the objects because of model bias (means, like we have described before, that the model train on
    dataset which most of the photos of red object in the center of green leaves were apples, and objects above the water were peoples
    and surfboards). so we think that bluring the backgroung of the image will make the model not paying attention to the 
    surrounding of the object, allowing it to classify better.
+
 2. Gamma reduction
    we decreased the brightness by half anywhere outside the boundary boxes, and doubles it inside. This is in order to reduce 
    problems of misclassification when the object is the dakest part in the image (like in the dolphin image).
+
 3. Bluring edged of boundary boxes
    We blured and darkened 5% into the boundary boxes, in order to reduce the effect of objects not centered in the middle of the 
    box on the classification of the object in the box. This might help in cluttered images like the images of the dogs and the cat, and the 
