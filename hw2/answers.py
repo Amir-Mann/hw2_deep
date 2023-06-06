@@ -171,8 +171,8 @@ part2_q3 = r"""
    SGD makes quicker to calculate steps down an aproximation of the loss surfaces, 
    using the loss of over a single, different sample (or mini batch) each time.
 
-3. Becuase SGD is so much faster at preforming each step, it will converge in much shorter time
-   allthough in more steps. SGD also preforms a sort of regularization, by fitting the model only
+3. Becuase SGD is so much faster at performing each step, it will converge in much shorter time
+   allthough in more steps. SGD also performs a sort of regularization, by fitting the model only
    to a small subset of the dataset instead of the whole thing. Often it is not possible to fit the entire
    dataset into memory, in those cases running GD is not feasible and SGD solves that problem.
    
@@ -308,16 +308,16 @@ part3_q1 = r"""
 3. From our knowledge of the distribution, it can be well approximated by an mlp model of our chosen hidden dims.
    This is because the distribution is best seperated by a simple curve. moreover, MLPs are highly expressive
    as we saw in the tutorials. Therefore, we can say that the approximation error in not significant.
-   It can be staited that even a perfect sepratation of this data would still have miss classification since there are
-   orange points of data in dense blue regions and vice verca.
+   It can be stated that even a perfect sepratation of this data would still have miss classification since there are
+   orange points of data in dense blue regions and vice versa.
 
 """
 
 part3_q2 = r"""
 **Your answer:**
 We would have expected there to be more False Negatives since we can see from the data plots at the begining of the notebook
-that there are many orange points in a heavly blue regions.
-This points with true labels of 1 would be classified as 0 generating a false negative.
+that there are many orange points in a heavly blue region.
+These points with true labels of 1 would be classified as 0 generating a false negative.
 
 This also matches our results in the confusion matrix.
 """
@@ -345,7 +345,7 @@ General note/ananlysis: We run the expiraments a few times with diffrenet HP, an
 we think because of that maybe some of the subtle differences between different architectors might have been lost.
 
 1. Increasing the width of the model seems to make it more expressive, which sometimes can cause over fitting: for deeper
-   models the wider networks, altough with more detailed decision boundries have lower test accuracies. for more shallow
+   models the wider networks, although with more detailed decision boundries have lower test accuracies. for more shallow
    models, the expresive power increase helps with test set performance. Increasing the width makes for more specialized
    decision boundries but not always better accuracies.
 
@@ -449,7 +449,7 @@ because each apoch requires more calculations due to around quedratic amount of 
 
 Lastly, we can see that the 128-wide networks which where only trained in this experiment outperform the
 networks of the first experiment, reaching 75% accuracy on test set. Around 3-5% more then the best ones
-there.
+there. This is probably the main addition in this one over the first expirement in our opnion.
 """
 
 part5_q3 = r"""
@@ -462,7 +462,7 @@ this.
 A wierd phenomena we noticed would be the network with 6(L=3) layers is trained the fastest, and there is not a
 single trend correltion. We think this is because while the 4(L=2) layers network is not expressive enough,
 it keeps on learning untill the very last epoch, the 8(L=4) layers network is very deep and hard to optimize
-over and therefor takes more time to start overfitting compared to the 6(L=3) layers one.
+over and e takes more time to start overfitting compared to the 6(L=3) layers one.
 
 This architecture of less features in the begining and more features in the last layers outperforms the
 homogeneous one in the previous experiment, reaching 78% accuracy in the best one on the test set.
